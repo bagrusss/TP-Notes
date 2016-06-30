@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:icon="@mipmap/ic_weather_cloud"
+        android:key="@string/key_notify_weather"
+        android:title="@string/weather" />
+    <android.support.v7.preference.ListPreference
+        android:defaultValue="@string/default_theme_value"
+        android:dialogIcon="@mipmap/ic_theme"
+        android:dialogTitle="@string/title_theme"
+        android:entries="@array/themes_list"
+        android:entryValues="@array/themes_values"
+        android:icon="@mipmap/ic_theme"
+        android:key="@string/key_theme"
+        android:summary="@string/theme_sum"
+        android:title="@string/title_theme" />-->
+
+</PreferenceScreen>

@@ -2,4 +2,7 @@
 <resources>
 
     <string name="notes">Notes</string>
+    <string name="encrypting">Encrypting</string>
+    <string name="share">Share</string>
+    <string name="categories">Categories</string>
 </resources>

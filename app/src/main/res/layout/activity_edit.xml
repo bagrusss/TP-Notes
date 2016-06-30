@@ -8,4 +8,24 @@
 
     <include layout="@layout/action_bar" />
 
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <EditText
+            android:id="@+id/note_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="100"
+            android:background="@android:color/transparent"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:textIsSelectable="true">
+
+            <requestFocus />
+        </EditText>
+
+    </ScrollView>
 </LinearLayout>
