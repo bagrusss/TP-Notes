@@ -3,4 +3,20 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="white_color">#E5E5E5</color>
+    <color name="dark_black">#3c3c3c</color>
+
+    <!-- Light theme colors-->
+    <color name="light_colorPrimary">#21C9DC</color>
+    <color name="light_colorPrimaryDark">#00A3B6</color>
+    <color name="light_colorAccent">#E7C844</color>
+    <color name="light_blue">#CCF1EA</color>
+
+    <!--Dark Theme-->
+    <color name="dark_colorPrimary">#595959</color>
+    <color name="dark_colorPrimaryDark">#3D3D3D</color>
+    <color name="dark_colorAccent">#E84C3D</color>
+    <color name="badge_color">?attr/colorAccent</color>
+
 </resources>

@@ -15,14 +15,16 @@
         <item>Dark</item>
     </array>
 
-    <string name="default_theme_value">theme1</string>
 
     <string name="theme_sum">Application theme</string>
     <string name="password_sum">Default: 12345</string>
 
+    <string name="default_theme_value">theme1</string>
+    <string name="theme2">theme2</string>
+
     <array name="themes_values">
         <item>@string/default_theme_value</item>
-        <item>theme2</item>
+        <item>@string/theme2</item>
     </array>
 
     <string name="key_theme">theme</string>

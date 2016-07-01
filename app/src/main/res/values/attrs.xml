@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomAttr">
+        <attr name="actionBarColor" format="integer|color" />
+        <attr name="backgroundDrawable" format="integer|color" />
+        <attr name="drawerHeader" format="integer|color" />
+        <attr name="drawerBackground" format="integer|color" />
+        <attr name="badgeColor" format="color" />
+        <attr name="themeIcon" format="integer" />
+        <attr name="passIcon" format="integer" />
+        <attr name="settingsIcon" format="integer" />
+        <attr name="notesIcon" format="integer" />
+        <attr name="categoriesIcon" format="integer" />
+        <attr name="aboutIcon" format="integer" />
+    </declare-styleable>
+</resources>

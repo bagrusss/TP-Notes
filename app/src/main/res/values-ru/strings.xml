@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="notes">Notes</string>
-    <string name="encrypting">Encrypting</string>
-    <string name="share">Share</string>
-    <string name="categories">Categories</string>
-    <string name="developer">Vladislav Kozhushko</string>
+    <string name="notes">Заметки</string>
+    <string name="encrypting">Шифрование</string>
+    <string name="share">Поделиться</string>
+    <string name="categories">Категории</string>
+    <string name="developer">Владислав Кожушко</string>
+    <string name="about">О приложении</string>
+
+
+    <string name="theme_sum">Тема приложения</string>
+    <string name="password_sum">Стандартный: 12345</string>
+    <string name="title_theme">Тема</string>
+    <string name="title_password">Пароль</string>
+    <string name="settings">Настройки</string>
+
+    <array name="themes_list">
+        <item>Светлая</item>
+        <item>Темная</item>
+    </array>
+
 </resources>

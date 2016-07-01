@@ -2,8 +2,8 @@ package ru.bagrusss.tpnotes.activities;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -18,7 +18,7 @@ import ru.bagrusss.tpnotes.fragments.CategoriesFragment;
 import ru.bagrusss.tpnotes.fragments.NotesFragment;
 import ru.bagrusss.tpnotes.fragments.SettingsFragment;
 
-public class NotesActivity extends AppCompatActivity {
+public class NotesActivity extends BaseActivity {
 
     private FragmentManager mFragmentManager;
     private Drawer mDrawer;
@@ -45,20 +45,34 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void buildDrawer() {
+        TypedArray ta = obtainStyledAttributes(mThemeId,
+                new int[]{
+                        R.attr.drawerHeader,
+                        R.attr.notesIcon,
+                        R.attr.categoriesIcon,
+                        R.attr.settingsIcon,
+                        R.attr.aboutIcon});
         mDrawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(mToolbar)
-                .withAccountHeader(new AccountHeaderBuilder().withActivity(this).withHeaderBackground(R.drawable.drawer_light).build())
+                .withAccountHeader(new AccountHeaderBuilder()
+                        .withActivity(this)
+                        .withHeaderBackground(ta.getResourceId(0, 0))
+                        .build())
                 .withDisplayBelowStatusBar(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.notes).withIcon(R.drawable.ic_assignment_black_24dp),
+                        new PrimaryDrawerItem().withName(R.string.notes)
+                                .withIcon(ta.getResourceId(1, R.drawable.ic_notes_black)),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.categories).withIcon(R.drawable.ic_folder_black_24dp),
+                        new PrimaryDrawerItem().withName(R.string.categories)
+                                .withIcon(ta.getResourceId(2, R.drawable.ic_categories_black)),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.settings).withIcon(R.drawable.ic_settings_black_24dp),
+                        new PrimaryDrawerItem().withName(R.string.settings)
+                                .withIcon(ta.getResourceId(3, R.drawable.ic_settings_black)),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.about).withIcon(R.drawable.ic_info_black_24dp)
+                        new PrimaryDrawerItem().withName(R.string.about)
+                                .withIcon(ta.getResourceId(4, R.drawable.ic_info_black))
                 ).withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     mLastPosition = position;
                     int resTitle = 0;
@@ -88,6 +102,7 @@ public class NotesActivity extends AppCompatActivity {
                     return false;
                 })
                 .build();
+        ta.recycle();
     }
 
 }

@@ -13,8 +13,83 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DialogStyleLight" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/light_colorAccent</item>
+    </style>
+
+    <style name="Base.Light" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/light_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/light_colorPrimaryDark</item>
+        <item name="colorAccent">@color/light_colorAccent</item>
+
+        <item name="backgroundDrawable">@color/light_blue</item>
+        <item name="drawerHeader">@drawable/drawer_light</item>
+
+        <item name="dialogTheme">@style/DialogStyleLight</item>
+        <item name="alertDialogTheme">@style/DialogStyleLight</item>
+
+        <item name="themeIcon">@drawable/ic_theme_black</item>
+        <item name="passIcon">@drawable/ic_key_black</item>
+        <item name="settingsIcon">@drawable/ic_settings_black</item>
+        <item name="notesIcon">@drawable/ic_notes_black</item>
+        <item name="categoriesIcon">@drawable/ic_categories_black</item>
+        <item name="aboutIcon">@drawable/ic_info_black</item>
+
+    </style>
+
+    <style name="Theme.Light" parent="Base.Light">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
+
+    <style name="Theme.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Dark application theme. -->
+
+    <style name="DialogStyleDark" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/dark_colorAccent</item>
+    </style>
+
+    <style name="Base.Dark" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/dark_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/dark_colorPrimaryDark</item>
+        <item name="colorAccent">@color/dark_colorAccent</item>
+
+        <item name="backgroundDrawable">@drawable/grey</item>
+        <item name="drawerHeader">@drawable/drawer_dark</item>
+
+        <!--drawer-->
+        <item name="material_drawer_background">@color/dark_black</item>
+        <item name="material_drawer_primary_text">@color/md_dark_primary_text</item>
+        <item name="material_drawer_secondary_text">@color/md_dark_primary_text</item>
+
+        <item name="dialogTheme">@style/DialogStyleDark</item>
+        <item name="alertDialogTheme">@style/DialogStyleDark</item>
+
+        <!--icons-->
+        <item name="themeIcon">@drawable/ic_theme_white</item>
+        <item name="passIcon">@drawable/ic_key_white</item>
+        <item name="settingsIcon">@drawable/ic_settings_white</item>
+        <item name="notesIcon">@drawable/ic_notes_white</item>
+        <item name="categoriesIcon">@drawable/ic_categories_white</item>
+        <item name="aboutIcon">@drawable/ic_info_white</item>
+
+    </style>
+
+    <style name="Theme.Dark" parent="Base.Dark">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
+
+    <style name="Theme.Dark.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/dark_black</item>
+    </style>
 
 </resources>

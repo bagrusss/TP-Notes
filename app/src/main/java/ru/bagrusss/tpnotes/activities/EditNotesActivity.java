@@ -60,8 +60,8 @@ public class EditNotesActivity extends BaseActivity {
 
     private void setLockIcon(boolean lock) {
         mLockItem.setIcon(lock ?
-                R.drawable.ic_lock_white :
-                R.drawable.ic_open_white);
+                R.drawable.ic_locked_white :
+                R.drawable.ic_locked_no_white);
     }
 
     private void save() {
