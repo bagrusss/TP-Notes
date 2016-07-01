@@ -15,6 +15,8 @@ public class EditNotesActivity extends BaseActivity {
     private MenuItem mLockItem;
     private EditText mNoteText;
 
+    public static final int CODE = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

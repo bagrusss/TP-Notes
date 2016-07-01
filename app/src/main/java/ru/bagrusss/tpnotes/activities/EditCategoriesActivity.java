@@ -7,6 +7,8 @@ import ru.bagrusss.tpnotes.R;
 
 public class EditCategoriesActivity extends BaseActivity {
 
+    public static final int CODE = 11;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

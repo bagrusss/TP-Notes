@@ -24,6 +24,7 @@ public class NotesActivity extends BaseActivity {
     private Drawer mDrawer;
     private Toolbar mToolbar;
     private int mLastPosition;
+    private Fragment mLastFragment;
 
     private static final int NOTES_POSITION = 1;
     private static final int CATEGORIES_POSITION = 3;
@@ -36,10 +37,11 @@ public class NotesActivity extends BaseActivity {
         setContentView(R.layout.activity_notes);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        mLastFragment = (Fragment) getLastCustomNonConfigurationInstance();
         mFragmentManager = getFragmentManager();
         mFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, new NotesFragment(EditNotesActivity.class))
+                .replace(R.id.container, mLastFragment != null ? mLastFragment : NotesFragment.newInstance(EditNotesActivity.CODE))
                 .commit();
         buildDrawer();
     }
@@ -80,7 +82,7 @@ public class NotesActivity extends BaseActivity {
                     switch (position) {
                         case NOTES_POSITION:
                             resTitle = R.string.notes;
-                            fragment = new NotesFragment(EditNotesActivity.class);
+                            fragment = NotesFragment.newInstance(EditNotesActivity.CODE);
                             break;
                         case SETTINGS_POSITION:
                             resTitle = R.string.settings;
@@ -92,17 +94,23 @@ public class NotesActivity extends BaseActivity {
                             break;
                         case CATEGORIES_POSITION:
                             resTitle = R.string.categories;
-                            fragment = new CategoriesFragment(EditCategoriesActivity.class);
+                            fragment = CategoriesFragment.newInstance(EditCategoriesActivity.CODE);
                             break;
                         default:
                             return true;
                     }
                     mToolbar.setTitle(resTitle);
-                    mFragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+                    mFragmentManager.beginTransaction()
+                            .replace(R.id.container, mLastFragment = fragment).commit();
                     return false;
                 })
                 .build();
         ta.recycle();
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mLastFragment;
     }
 
 }

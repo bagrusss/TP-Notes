@@ -12,19 +12,30 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import ru.bagrusss.tpnotes.R;
+import ru.bagrusss.tpnotes.activities.EditCategoriesActivity;
+import ru.bagrusss.tpnotes.activities.EditNotesActivity;
 
 /**
  * Created by bagrusss.
  */
 public class BaseListFragment extends Fragment {
 
-    protected Class<? extends AppCompatActivity> mForStart;
     protected FloatingActionButton mFab;
     protected ListView mListView;
+    public static final String ACTIVITY_CODE = "ACTIVITY_CODE";
 
-    public BaseListFragment(Class<? extends AppCompatActivity> activity) {
-        mForStart = activity;
+    public BaseListFragment() {
+
     }
+
+    public static BaseListFragment newInstance(int activityCode) {
+        Bundle args = new Bundle();
+        args.putInt(ACTIVITY_CODE, activityCode);
+        BaseListFragment fragment = new BaseListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Nullable
     @Override
@@ -32,9 +43,14 @@ public class BaseListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_list_fab, container, false);
         mFab = (FloatingActionButton) v.findViewById(R.id.add_button);
         if (mFab != null) {
-            mFab.setOnClickListener(view -> startActivity(new Intent(getActivity(), mForStart)));
+            Bundle args = getArguments();
+            mFab.setOnClickListener(view ->
+                    startActivity(new Intent(getActivity(),
+                            args.getInt(ACTIVITY_CODE, EditNotesActivity.CODE) == EditNotesActivity.CODE ?
+                                    EditNotesActivity.class : EditCategoriesActivity.class)));
         }
         mListView = (ListView) v.findViewById(R.id.list_view);
         return v;
     }
+
 }
