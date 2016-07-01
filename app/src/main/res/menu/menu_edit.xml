@@ -2,12 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/share_action"
-        android:icon="@drawable/ic_share_white_24dp"
+        android:icon="@drawable/ic_share_white"
         android:title="@string/share"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/lock_action"
-        android:icon="@drawable/ic_lock_open_white_24dp"
+        android:icon="@drawable/ic_lock_open_white"
         android:title="@string/encrypting"
         app:showAsAction="ifRoom" />
 </menu>

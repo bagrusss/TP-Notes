@@ -37,7 +37,10 @@ public class NotesActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mFragmentManager = getFragmentManager();
-        mFragmentManager.beginTransaction().replace(R.id.container, new NotesFragment()).commit();
+        mFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, new NotesFragment(EditNotesActivity.class))
+                .commit();
         buildDrawer();
     }
 
@@ -63,7 +66,7 @@ public class NotesActivity extends AppCompatActivity {
                     switch (position) {
                         case NOTES_POSITION:
                             resTitle = R.string.notes;
-                            fragment = new NotesFragment();
+                            fragment = new NotesFragment(EditNotesActivity.class);
                             break;
                         case SETTINGS_POSITION:
                             resTitle = R.string.settings;
@@ -75,7 +78,8 @@ public class NotesActivity extends AppCompatActivity {
                             break;
                         case CATEGORIES_POSITION:
                             resTitle = R.string.categories;
-                            fragment = new CategoriesFragment();
+                            fragment = new CategoriesFragment(EditCategoriesActivity.class);
+                            break;
                         default:
                             return true;
                     }

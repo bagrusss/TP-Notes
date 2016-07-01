@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.EditActivity">
+    tools:context=".activities.EditNotesActivity">
 
     <include layout="@layout/action_bar" />
 

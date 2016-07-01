@@ -5,4 +5,5 @@
     <string name="encrypting">Encrypting</string>
     <string name="share">Share</string>
     <string name="categories">Categories</string>
+    <string name="developer">Vladislav Kozhushko</string>
 </resources>
