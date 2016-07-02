@@ -6,4 +6,5 @@
     <dimen name="developer_photo_dimen">50dp</dimen>
     <dimen name="developer_photo_radius">150dp</dimen>
     <dimen name="item_title_text_size">25sp</dimen>
+    <dimen name="cardview_margin">10dp</dimen>
 </resources>

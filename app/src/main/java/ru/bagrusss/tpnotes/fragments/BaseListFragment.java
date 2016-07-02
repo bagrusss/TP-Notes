@@ -1,7 +1,11 @@
 package ru.bagrusss.tpnotes.fragments;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,28 +17,26 @@ import android.widget.ListView;
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.activities.EditCategoriesActivity;
 import ru.bagrusss.tpnotes.activities.EditNotesActivity;
+import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
+import ru.bagrusss.tpnotes.data.HelperDB;
 
 /**
  * Created by bagrusss.
  */
-public class BaseListFragment extends Fragment {
+public abstract class BaseListFragment extends Fragment {
 
     protected FloatingActionButton mFab;
     protected ListView mListView;
     public static final String ACTIVITY_CODE = "ACTIVITY_CODE";
+    protected CategoryAdapter mCategoryAdapter;
 
     public BaseListFragment() {
 
     }
 
-    public static BaseListFragment newInstance(int activityCode) {
-        Bundle args = new Bundle();
-        args.putInt(ACTIVITY_CODE, activityCode);
-        BaseListFragment fragment = new BaseListFragment();
-        fragment.setArguments(args);
-        return fragment;
+    protected void loadCategories(LoaderManager.LoaderCallbacks<?> callbacks) {
+        getLoaderManager().initLoader(CategoriesLoader.ID, null, callbacks);
     }
-
 
     @Nullable
     @Override
@@ -50,6 +52,20 @@ public class BaseListFragment extends Fragment {
         }
         mListView = (ListView) v.findViewById(R.id.list_view);
         return v;
+    }
+
+    protected static class CategoriesLoader extends CursorLoader {
+
+        public static final int ID = 100;
+
+        public CategoriesLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            return HelperDB.getInstance(getContext()).allCategories();
+        }
     }
 
 }

@@ -20,15 +20,17 @@ import ru.bagrusss.tpnotes.data.HelperDB;
 public class CategoryAdapter extends CursorAdapter {
 
     private LayoutInflater mInflater;
+    private int mLayout;
 
-    public CategoryAdapter(Context context, Cursor c) {
+    public CategoryAdapter(Context context, Cursor c, int layout) {
         super(context, c, false);
         mInflater = LayoutInflater.from(context);
+        mLayout = layout;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return mInflater.inflate(R.layout.item_category, parent, false);
+        return mInflater.inflate(mLayout, parent, false);
     }
 
     @Override
@@ -47,5 +49,15 @@ public class CategoryAdapter extends CursorAdapter {
     public static class ViewHolder {
         public TextView text;
         public CircleImageView color;
+    }
+
+    @Override
+    public View newDropDownView(Context context, Cursor cursor, ViewGroup parent) {
+        return super.newDropDownView(context, cursor, parent);
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        return super.getDropDownView(position, convertView, parent);
     }
 }

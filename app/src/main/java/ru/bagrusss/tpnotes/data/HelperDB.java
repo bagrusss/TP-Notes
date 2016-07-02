@@ -89,6 +89,7 @@ public class HelperDB extends SQLiteOpenHelper {
         File file = FilesStorage.getNotesDir();
         File files[] = file.listFiles();
         mDB.delete(TABLE_NOTES, null, null);
+        mDB.delete(TABLE_CATEGORIES, null, null);
         SQLiteStatement statementNote = mDB.compileStatement(INSERT_NOTE);
         SQLiteStatement statementCategory = mDB.compileStatement(INSERT_CATEGORY);
         for (File f : files) {
