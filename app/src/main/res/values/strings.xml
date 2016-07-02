@@ -31,5 +31,6 @@
     <string name="key_password">password</string>
     <string name="developer">Vladislav Kozhushko</string>
     <string name="tp_link">park.mail.ru/profile/v.kozhushko/</string>
+    <string name="save">Save</string>
 
 </resources>

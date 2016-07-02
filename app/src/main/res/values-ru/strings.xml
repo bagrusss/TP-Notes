@@ -14,6 +14,7 @@
     <string name="title_theme">Тема</string>
     <string name="title_password">Пароль</string>
     <string name="settings">Настройки</string>
+    <string name="save">Сохранить</string>
 
     <array name="themes_list">
         <item>Светлая</item>

@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.EditCategoriesActivity">
 
     <include layout="@layout/action_bar" />
-</RelativeLayout>
+
+    <EditText
+        android:id="@+id/category_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:ems="20"
+        android:textSize="@dimen/item_title_text_size">
+
+        <requestFocus />
+    </EditText>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/category_color"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_gravity="center_horizontal"
+        android:src="?attr/colorAccent" />
+
+</LinearLayout>

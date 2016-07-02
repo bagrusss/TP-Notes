@@ -4,7 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="developer_photo_dimen">50dp</dimen>
-    <dimen name="developer_text_size">25sp</dimen>
     <dimen name="developer_photo_radius">150dp</dimen>
     <dimen name="item_title_text_size">25sp</dimen>
 </resources>

@@ -13,9 +13,13 @@ import ru.bagrusss.tpnotes.R;
  * Created by bagrusss.
  */
 
-public class BaseActivity extends AppCompatActivity {
+abstract public class BaseActivity extends AppCompatActivity {
+
     protected Toolbar mToolbar;
     protected int mThemeId;
+
+    public static final String ACTION_EDIT = "ACTION_EDIT";
+    public static final String ACTION_NEW = "ACTION_NEW";
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -34,4 +38,6 @@ public class BaseActivity extends AppCompatActivity {
             setTheme(R.style.Theme_Dark_NoActionBar);
         super.onCreate(savedInstanceState);
     }
+
+    protected abstract void save();
 }

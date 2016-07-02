@@ -26,6 +26,13 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url 'https://dl.bintray.com/azeesoft/maven'
+    }
+}
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -43,5 +50,8 @@ dependencies {
     }
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '19.0'
+    compile 'com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar'
 
 }

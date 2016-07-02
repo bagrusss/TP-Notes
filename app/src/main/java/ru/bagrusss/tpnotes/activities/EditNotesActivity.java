@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import ru.bagrusss.tpnotes.R;
 
-public class EditNotesActivity extends BaseActivity {
+public final class EditNotesActivity extends BaseActivity {
 
     private boolean mLockState = false;
     private MenuItem mLockItem;
@@ -20,7 +20,7 @@ public class EditNotesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_edit_note);
         mNoteText = (EditText) findViewById(R.id.note_text);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -31,7 +31,7 @@ public class EditNotesActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit, menu);
+        getMenuInflater().inflate(R.menu.menu_edit_note, menu);
         mLockItem = menu.findItem(R.id.lock_action);
         setLockIcon(mLockState);
         return true;
@@ -47,6 +47,9 @@ public class EditNotesActivity extends BaseActivity {
                 break;
             case R.id.share_action:
 
+                break;
+            case R.id.save_action:
+                save();
                 break;
             default:
                 res = false;
@@ -66,7 +69,8 @@ public class EditNotesActivity extends BaseActivity {
                 R.drawable.ic_locked_no_white);
     }
 
-    private void save() {
+    @Override
+    protected void save() {
 
     }
 }

@@ -1,12 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -90,6 +83,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimaryDark">@color/dark_black</item>
+    </style>
+
+    <style name="CustomColorPicker" parent="ColorPicker">
+        <item name="cp_backgroundColor">?attr/android:windowBackground</item>
+        <item name="cp_positiveActionTextColor">?attr/colorAccent</item>
+        <item name="cp_negativeActionTextColor">?attr/colorAccent</item>
+        <item name="cp_hexaDecimalTextColor">?attr/editTextColor</item>
+        <item name="cp_colorComponentsTextColor">?attr/editTextColor</item>
     </style>
 
 </resources>

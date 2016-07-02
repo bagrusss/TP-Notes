@@ -24,7 +24,6 @@ public class NotesActivity extends BaseActivity {
     private Drawer mDrawer;
     private Toolbar mToolbar;
     private int mLastPosition;
-    private Fragment mLastFragment;
 
     private static final int NOTES_POSITION = 1;
     private static final int CATEGORIES_POSITION = 3;
@@ -37,13 +36,13 @@ public class NotesActivity extends BaseActivity {
         setContentView(R.layout.activity_notes);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        mLastFragment = (Fragment) getLastCustomNonConfigurationInstance();
         mFragmentManager = getFragmentManager();
-        mFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, mLastFragment != null ? mLastFragment : NotesFragment.newInstance(EditNotesActivity.CODE))
-                .commit();
+        Object lastFragment = getLastCustomNonConfigurationInstance();
         buildDrawer();
+        if (lastFragment != null) {
+            changeFragment((Integer) lastFragment);
+            mDrawer.setSelectionAtPosition(mLastPosition);
+        } else changeFragment(NOTES_POSITION);
     }
 
     private void buildDrawer() {
@@ -75,42 +74,60 @@ public class NotesActivity extends BaseActivity {
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem().withName(R.string.about)
                                 .withIcon(ta.getResourceId(4, R.drawable.ic_info_black))
-                ).withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    mLastPosition = position;
-                    int resTitle = 0;
-                    Fragment fragment = null;
-                    switch (position) {
-                        case NOTES_POSITION:
-                            resTitle = R.string.notes;
-                            fragment = NotesFragment.newInstance(EditNotesActivity.CODE);
-                            break;
-                        case SETTINGS_POSITION:
-                            resTitle = R.string.settings;
-                            fragment = new SettingsFragment();
-                            break;
-                        case ABOUT_POSITION:
-                            resTitle = R.string.about;
-                            fragment = new AboutFragment();
-                            break;
-                        case CATEGORIES_POSITION:
-                            resTitle = R.string.categories;
-                            fragment = CategoriesFragment.newInstance(EditCategoriesActivity.CODE);
-                            break;
-                        default:
-                            return true;
-                    }
-                    mToolbar.setTitle(resTitle);
-                    mFragmentManager.beginTransaction()
-                            .replace(R.id.container, mLastFragment = fragment).commit();
-                    return false;
-                })
+                ).withOnDrawerItemClickListener(
+                        (view, position, drawerItem) -> changeFragment(position))
                 .build();
         ta.recycle();
     }
 
+    private boolean changeFragment(int pos) {
+        mLastPosition = pos;
+        int resTitle;
+        Fragment lastFragment;
+        switch (pos) {
+            case NOTES_POSITION:
+                resTitle = R.string.notes;
+                lastFragment = NotesFragment.newInstance(EditNotesActivity.CODE);
+                break;
+            case SETTINGS_POSITION:
+                resTitle = R.string.settings;
+                lastFragment = new SettingsFragment();
+                break;
+            case ABOUT_POSITION:
+                resTitle = R.string.about;
+                lastFragment = new AboutFragment();
+                break;
+            case CATEGORIES_POSITION:
+                resTitle = R.string.categories;
+                lastFragment = CategoriesFragment.newInstance(EditCategoriesActivity.CODE);
+                break;
+            default:
+                return true;
+        }
+        mToolbar.setTitle(resTitle);
+        mFragmentManager.beginTransaction()
+                .replace(R.id.container, lastFragment).commit();
+        return false;
+    }
+
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return mLastFragment;
+        return mLastPosition;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen()) {
+            mDrawer.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void save() {
+
     }
 
 }
