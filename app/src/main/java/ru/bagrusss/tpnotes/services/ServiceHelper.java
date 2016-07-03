@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import ru.bagrusss.tpnotes.data.HelperDB;
+import ru.bagrusss.tpnotes.utils.FilesStorage;
 
 /**
  * Created by bagrusss.
@@ -11,8 +12,14 @@ import ru.bagrusss.tpnotes.data.HelperDB;
 
 public class ServiceHelper {
 
-    public static void saveNote(Context context, String text, String category) {
-
+    public static void saveNote(Context context, String filename, String text, String category, String color) {
+        Intent intent = new Intent(context, NotesIntentService.class);
+        intent.setAction(NotesIntentService.ACTION_SAVE_NOTE);
+        intent.putExtra(HelperDB.CATEGORY, category);
+        intent.putExtra(FilesStorage.FILE_NAME, filename);
+        intent.putExtra(HelperDB.FIRST_STRING, text);
+        intent.putExtra(HelperDB.COLOR, color);
+        context.startService(intent);
     }
 
     public static void readNote(Context context, String filename) {
@@ -31,12 +38,11 @@ public class ServiceHelper {
         context.startService(intent);
     }
 
-    public static void readCategory(Context context, String category) {
-
-    }
-
-    public static void deleteCategory(Context context, String category) {
-
+    public static void deleteCategory(Context context, long id) {
+        Intent intent = new Intent(context, NotesIntentService.class);
+        intent.setAction(NotesIntentService.ACTION_DELETE_CATEGORY);
+        intent.putExtra(HelperDB.ID, id);
+        context.startService(intent);
     }
 
     public static void scanNotes(Context context) {

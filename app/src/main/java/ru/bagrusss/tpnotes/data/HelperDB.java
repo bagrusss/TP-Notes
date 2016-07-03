@@ -6,12 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.Color;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import ru.bagrusss.tpnotes.utils.FilesStorage;
 
@@ -24,7 +22,7 @@ public class HelperDB extends SQLiteOpenHelper {
     private static final String DB_NAME = "tp_notes.db";
     private static final int VERSION = 1;
 
-    public static final String TABLE_NOTES = "Notes";
+    public static final String TABLE_NOTES = "Note";
     public static final String TABLE_CATEGORIES = "Categories";
 
     public static final String ID = "_id";
@@ -51,6 +49,9 @@ public class HelperDB extends SQLiteOpenHelper {
     private static final String INSERT_NOTE = "INSERT OR IGNORE INTO " + TABLE_NOTES +
             " ( " + NAME + ',' + FIRST_STRING + ',' + CATEGORY + ',' + COLOR + ')'
             + " VALUES(?,?,?,?);";
+
+    private static final String DELETE_NOTE = "DELETE FROM " + TABLE_NOTES +
+            " WHERE " + NAME + "=?;";
 
     private static HelperDB mInstance;
     private static SQLiteDatabase mDB;
@@ -89,61 +90,29 @@ public class HelperDB extends SQLiteOpenHelper {
     }
 
     public void scanNotes() {
-        File file = FilesStorage.getNotesDir();
-        File files[] = file.listFiles();
-        mDB.delete(TABLE_NOTES, null, null);
-        SQLiteStatement statementNote = mDB.compileStatement(INSERT_NOTE);
-        SQLiteStatement statementCategory = mDB.compileStatement(INSERT_CATEGORY);
-        for (File f : files) {
-            String fName = f.getName();
-            int categorySeparator = fName.indexOf("__");
-            int colorSeparator = fName.indexOf("-");
-            int fileExtSeparator = fName.indexOf(".");
-            int res = categorySeparator | colorSeparator | fileExtSeparator;
-            if (res < 0)
-                return;
-            String color = fName.substring(colorSeparator + 1, fileExtSeparator);
-            try {
-                Color.parseColor(color);
-            } catch (IllegalArgumentException e) {
-                return;
-            }
-            String category = fName.substring(categorySeparator + 2, colorSeparator);
-            String name = fName.substring(0, categorySeparator);
-            BufferedReader reader = null;
-            String first = null;
-            try {
-                reader = new BufferedReader(new FileReader(f));
-                first = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            statementNote.bindString(1, name);
-            statementNote.bindString(2, first == null ? "" : first);
-            statementNote.bindString(3, category);
-            statementNote.bindString(4, color);
-            statementNote.executeInsert();
-            statementCategory.bindString(1, category);
-            statementCategory.bindString(2, color);
-            statementCategory.executeInsert();
+        SQLiteStatement deleteStatement = mDB.compileStatement(DELETE_NOTE);
+        Cursor c = mDB.query(TABLE_NOTES, new String[]{NAME}, null, null, null, null, null);
+        List<String> forDelete = new LinkedList<>();
+        while (c.moveToNext()) {
+            String filename = c.getString(c.getColumnIndex(NAME));
+            File f = FilesStorage.getNote(filename);
+            if (f == null)
+                forDelete.add(filename);
         }
-        statementNote.close();
-        statementCategory.close();
+        c.close();
+        for (String fl : forDelete) {
+            deleteStatement.bindString(1, fl);
+            deleteStatement.executeUpdateDelete();
+        }
+        deleteStatement.close();
     }
 
-    public void insertNote(String name, String first, String category) {
+    public void insertNote(String name, String first, String category, String color) {
         ContentValues cv = new ContentValues();
         cv.put(NAME, name);
         cv.put(FIRST_STRING, first);
         cv.put(CATEGORY, category);
+        cv.put(COLOR, color);
         mDB.insert(TABLE_NOTES, null, cv);
     }
 
@@ -171,16 +140,20 @@ public class HelperDB extends SQLiteOpenHelper {
         return res;
     }
 
+    public long deleteCategory(long id) {
+        return mDB.delete(TABLE_CATEGORIES, ID + "=?", new String[]{String.valueOf(id)});
+    }
+
     public Cursor allNotes() {
         return mDB.query(TABLE_NOTES, null, null, null, null, null, null);
     }
 
     public Cursor allCategories() {
-        return mDB.query(TABLE_CATEGORIES, null, null, null, null, null, null);
+        return mDB.query(TABLE_CATEGORIES, null, null, null, null, null, NAME);
     }
 
     public Cursor notAllCategories() {
-        return mDB.query(TABLE_CATEGORIES, null, ID + "!=1", null, null, null, null);
+        return mDB.query(TABLE_CATEGORIES, null, ID + "!=1", null, null, null, NAME);
     }
 
     public Cursor notesWithCategory(String category) {

@@ -9,7 +9,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -57,6 +59,12 @@ public abstract class BaseListFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     public static class CategoriesLoader extends CursorLoader {
 
         public static final int ID = 100;
@@ -71,6 +79,18 @@ public abstract class BaseListFragment extends Fragment {
         public Cursor loadInBackground() {
             return all ? HelperDB.getInstance(getContext()).allCategories() :
                     HelperDB.getInstance(getContext()).notAllCategories();
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.list_view) {
+            String[] items = getResources().getStringArray(R.array.menu_list);
+            menu.setHeaderTitle(R.string.context_menu);
+            for (int i = 0; i < items.length; i++) {
+                menu.add(Menu.NONE, i, i, items[i]);
+            }
         }
     }
 

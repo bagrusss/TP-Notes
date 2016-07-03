@@ -5,7 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.common.io.Closer;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -14,6 +18,10 @@ import java.io.IOException;
 public class FilesStorage {
 
     public static final String NOTES_DIR = "TP Notes";
+    public static final String FILE_NAME = "FILE_NAME";
+
+    public static final String PREFIX = "note";
+    public static final String EXT = ".txt";
 
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -26,9 +34,24 @@ public class FilesStorage {
                 Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
-    public static boolean createNote(String fileName) throws IOException {
+    public static File createNote(String fileName) throws IOException {
         File file = new File(getNotesDir(), fileName);
-        return !file.exists() && file.createNewFile();
+        return !file.exists() && file.createNewFile() ? file : null;
+    }
+
+    public static void writeNote(String filename, String text) throws IOException {
+        BufferedWriter writer;
+        Closer closer = Closer.create();
+        try {
+            File file = createNote(filename);
+            writer = closer.register(new BufferedWriter(new FileWriter(file)));
+            writer.append(text);
+            writer.flush();
+        } catch (IOException e) {
+            throw closer.rethrow(e);
+        } finally {
+            closer.close();
+        }
     }
 
     @Nullable

@@ -29,7 +29,6 @@ public final class EditCategoriesActivity extends BaseActivity {
     private EditText mCategoryText;
     private CircleImageView mCategoryColor;
     private String mColor;
-    private String mAction;
     private long mID;
     public static final String KEY_COLOR = "COLOR";
 

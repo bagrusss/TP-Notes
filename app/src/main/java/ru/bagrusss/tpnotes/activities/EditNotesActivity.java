@@ -8,12 +8,23 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
+import ru.bagrusss.tpnotes.eventbus.Message;
 import ru.bagrusss.tpnotes.fragments.BaseListFragment;
+import ru.bagrusss.tpnotes.services.ServiceHelper;
+import ru.bagrusss.tpnotes.utils.DateTime;
+import ru.bagrusss.tpnotes.utils.FilesStorage;
 
 public final class EditNotesActivity extends BaseActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -22,12 +33,18 @@ public final class EditNotesActivity extends BaseActivity
     private MenuItem mLockItem;
     private EditText mNoteText;
 
-    private Spinner mCategory;
+    private Spinner mCategorySpinner;
     private CategoryAdapter mCategoryAdapter;
+    private String mCategory;
+    private String mColor;
 
     public static final int REQUEST_CODE = 10;
     public static final String KEY_LOCKED = "LOCKED";
     public static final String FILE_NAME = "FILE_NAME";
+
+    private boolean result = false;
+    private boolean back = false;
+    private String mFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +52,37 @@ public final class EditNotesActivity extends BaseActivity
         setContentView(R.layout.activity_edit_note);
         mNoteText = (EditText) findViewById(R.id.note_text);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mNoteText = (EditText) findViewById(R.id.note_text);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent internalIntent = getIntent();
-        mLockState = internalIntent.getBooleanExtra(KEY_LOCKED, false);
+        Intent intent = getIntent();
 
-        mCategory = (Spinner) findViewById(R.id.spinner_category);
+        mCategorySpinner = (Spinner) findViewById(R.id.spinner_category);
         mCategoryAdapter = new CategoryAdapter(this, null, R.layout.item_category);
-        if (mCategory != null) {
-            mCategory.setAdapter(mCategoryAdapter);
+        if (mCategorySpinner != null) {
+            mCategorySpinner.setAdapter(mCategoryAdapter);
+            mCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) view.getTag();
+                    mCategory = holder.text.getText().toString();
+                    mColor = holder.colorVal;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
         }
         getLoaderManager().initLoader(BaseListFragment.CategoriesLoader.ID, null, this);
+        EventBus.getDefault().register(this);
+        mAction = intent.getAction();
+        if (mAction.equals(ACTION_NEW)) {
+            mFileName = FilesStorage.PREFIX + DateTime.get() + FilesStorage.EXT;
+        } else {
+
+        }
     }
 
     @Override
@@ -83,8 +120,15 @@ public final class EditNotesActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+        if (mNoteText.getText().length() == 0)
+            super.onBackPressed();
+        if (result) {
+            setResult(RESULT_OK);
+            super.onBackPressed();
+            return;
+        }
         save();
-        super.onBackPressed();
+        back = true;
     }
 
     private void setLockIcon(boolean lock) {
@@ -95,7 +139,23 @@ public final class EditNotesActivity extends BaseActivity
 
     @Override
     protected void save() {
+        String text = mNoteText.getText().toString();
+        ServiceHelper.saveNote(this, mFileName, text, mCategory, mColor);
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Message msg) {
+        if (msg.reqCode == REQUEST_CODE) {
+            if (msg.status == Message.OK) {
+                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
+                result = true;
+                if (back) {
+                    setResult(RESULT_OK);
+                    super.onBackPressed();
+                }
+            } else Toast.makeText(this, R.string.error_save, Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     @Override
@@ -113,4 +173,9 @@ public final class EditNotesActivity extends BaseActivity
 
     }
 
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
 }

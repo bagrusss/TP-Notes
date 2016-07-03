@@ -12,14 +12,15 @@
         android:summary="@string/theme_sum"
         android:title="@string/title_theme" />
 
-    <EditTextPreference
-        android:defaultValue="12345"
-        android:dialogIcon="?attr/passIcon"
-        android:dialogTitle="@string/title_password"
-        android:icon="?attr/passIcon"
-        android:inputType="numberPassword"
-        android:key="@string/key_password"
-        android:summary="@string/password_sum"
-        android:title="@string/title_password" />
+    <!--    <EditTextPreference
+            android:defaultValue="1234"
+            android:dialogIcon="?attr/passIcon"
+            android:dialogTitle="@string/title_password"
+            android:icon="?attr/passIcon"
+            android:ems="4"
+            android:inputType="numberPassword"
+            android:key="@string/key_password"
+            android:summary="@string/password_sum"
+            android:title="@string/title_password" />-->
 
 </PreferenceScreen>

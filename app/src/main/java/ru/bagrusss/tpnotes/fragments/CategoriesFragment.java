@@ -7,14 +7,21 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.activities.BaseActivity;
 import ru.bagrusss.tpnotes.activities.EditCategoriesActivity;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
+import ru.bagrusss.tpnotes.eventbus.Message;
+import ru.bagrusss.tpnotes.services.ServiceHelper;
 
 /**
  * Created by bagrusss.
@@ -36,8 +43,22 @@ public class CategoriesFragment extends BaseListFragment
         mCategoryAdapter = new CategoryAdapter(getActivity(), null, R.layout.item_category);
         mListView.setAdapter(mCategoryAdapter);
         mListView.setOnItemClickListener(this);
+        registerForContextMenu(mListView);
         loadCategories(this);
+        EventBus.getDefault().register(this);
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Message msg) {
+        if (msg.reqCode == REQUEST_CODE && msg.status == Message.OK)
+            getLoaderManager().getLoader(CategoriesLoader.ID).forceLoad();
     }
 
     public static CategoriesFragment newInstance(int activityCode) {
@@ -65,6 +86,10 @@ public class CategoriesFragment extends BaseListFragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        editCategory(view, id);
+    }
+
+    private void editCategory(View view, long id) {
         Intent intent = new Intent(getActivity(), EditCategoriesActivity.class);
         intent.setAction(BaseActivity.ACTION_EDIT);
         CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) view.getTag();
@@ -79,4 +104,22 @@ public class CategoriesFragment extends BaseListFragment
         getLoaderManager().getLoader(CategoriesLoader.ID).forceLoad();
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case 1:
+                ServiceHelper.deleteCategory(getActivity(), info.id);
+                break;
+            case 0:
+                editCategory(info.targetView, info.id);
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
 }

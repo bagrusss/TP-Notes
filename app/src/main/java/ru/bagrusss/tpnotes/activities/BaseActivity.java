@@ -18,6 +18,7 @@ abstract public class BaseActivity extends AppCompatActivity {
     public static final String KEY_ID = "ID";
     protected Toolbar mToolbar;
     protected int mThemeId;
+    protected String mAction;
 
     public static final String ACTION_EDIT = "ACTION_EDIT";
     public static final String ACTION_NEW = "ACTION_NEW";

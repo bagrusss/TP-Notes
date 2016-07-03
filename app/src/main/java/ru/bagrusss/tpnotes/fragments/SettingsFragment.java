@@ -2,10 +2,7 @@ package ru.bagrusss.tpnotes.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
-import android.text.InputFilter;
-import android.widget.EditText;
 
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.activities.NotesActivity;
@@ -28,10 +25,11 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     return false;
                 });
+        /*
         EditText pass = ((EditTextPreference) findPreference(getString(R.string.key_password)))
                 .getEditText();
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter.LengthFilter(8);
-        pass.setFilters(filters);
+        pass.setFilters(filters);*/
     }
 }

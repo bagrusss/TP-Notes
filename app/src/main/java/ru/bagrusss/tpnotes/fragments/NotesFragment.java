@@ -2,7 +2,6 @@ package ru.bagrusss.tpnotes.fragments;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -42,7 +41,6 @@ public class NotesFragment extends BaseListFragment
     private Spinner mCategoriesSpinner;
     private View mSpinnerContainer;
     private NotesAdapter mNotesAdapter;
-    private ProgressDialog mDialog;
     private int loadersCount = 2;
     public static final int REQUEST_CODE = 30;
 
@@ -56,8 +54,6 @@ public class NotesFragment extends BaseListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, root, savedInstanceState);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        mDialog = ProgressDialog
-                .show(getActivity(), getString(R.string.loading), getString(R.string.wait), true);
         mSpinnerContainer = LayoutInflater.from(getActivity())
                 .inflate(R.layout.toolbar_spinner, toolbar, false);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
@@ -162,8 +158,6 @@ public class NotesFragment extends BaseListFragment
                 --loadersCount;
                 break;
         }
-        if (loadersCount == 0)
-            mDialog.dismiss();
     }
 
     @Override

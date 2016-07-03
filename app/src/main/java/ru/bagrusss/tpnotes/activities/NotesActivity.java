@@ -13,6 +13,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
 import ru.bagrusss.tpnotes.R;
+import ru.bagrusss.tpnotes.data.HelperDB;
 import ru.bagrusss.tpnotes.fragments.AboutFragment;
 import ru.bagrusss.tpnotes.fragments.CategoriesFragment;
 import ru.bagrusss.tpnotes.fragments.NotesFragment;
@@ -130,4 +131,9 @@ public class NotesActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        HelperDB.closeDB();
+        super.onDestroy();
+    }
 }

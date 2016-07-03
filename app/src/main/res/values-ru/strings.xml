@@ -10,7 +10,6 @@
 
 
     <string name="theme_sum">Тема приложения</string>
-    <string name="password_sum">Стандартный: 12345</string>
     <string name="title_theme">Тема</string>
     <string name="title_password">Пароль</string>
     <string name="settings">Настройки</string>
@@ -20,10 +19,19 @@
     <string name="wait">Пожалуйста, подождите…</string>
     <string name="edit">Редактирование</string>
     <string name="error_name">Такая категория уже существует</string>
+    <string name="context_menu">Меню</string>
+    <string name="saved">Сохранено</string>
+    <string name="error_save">Не могу сохранить файл</string>
+
 
     <array name="themes_list">
         <item>Светлая</item>
         <item>Темная</item>
+    </array>
+
+    <array name="menu_list">
+        <item>Редактировать</item>
+        <item>Удалить</item>
     </array>
 
 </resources>

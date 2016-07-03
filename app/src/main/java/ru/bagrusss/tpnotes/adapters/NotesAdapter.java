@@ -42,13 +42,14 @@ public class NotesAdapter extends CursorAdapter {
         holder.category.setText(c.getString(c.getColumnIndex(HelperDB.CATEGORY)));
         holder.name = c.getString(c.getColumnIndex(HelperDB.NAME));
         holder.color.setImageDrawable(new ColorDrawable(
-                Color.parseColor(c.getString(c.getColumnIndex(HelperDB.COLOR)))));
+                Color.parseColor(holder.colorVal = c.getString(c.getColumnIndex(HelperDB.COLOR)))));
     }
 
     public static class ViewHolder {
-        TextView firstString;
+        public TextView firstString;
         public TextView category;
         CircleImageView color;
         public String name;
+        public String colorVal;
     }
 }

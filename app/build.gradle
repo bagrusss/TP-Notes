@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "ru.bagrusss.tpnotes"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -53,5 +53,5 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
     compile group: 'com.google.guava', name: 'guava', version: '19.0'
     compile 'com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar'
-
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
