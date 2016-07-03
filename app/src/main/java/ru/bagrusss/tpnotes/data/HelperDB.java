@@ -166,12 +166,6 @@ public class HelperDB extends SQLiteOpenHelper {
         return mDB.query(TABLE_NOTES, null, CATEGORY + "=?", new String[]{category}, null, null, NAME);
     }
 
-    public static void closeDB() {
-        if (mDB != null && mDB.isOpen())
-            mDB.close();
-        mInstance = null;
-    }
-
     public void updateNote(String filename, String first, String category, String color) {
         ContentValues cv = new ContentValues();
         cv.put(NAME, filename);
@@ -184,5 +178,11 @@ public class HelperDB extends SQLiteOpenHelper {
     public long deleteNote(String file) {
         return mDB.delete(TABLE_NOTES, NAME + "=?", new String[]{file});
 
+    }
+
+    public static void closeDB() {
+        /*if (mDB != null && mDB.isOpen())
+            mDB.close();*/
+        mInstance = null;
     }
 }
