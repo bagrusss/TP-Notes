@@ -68,11 +68,21 @@ public class NotesIntentService extends IntentService {
                     saveNote(intent, true);
                     break;
                 case ACTION_DELETE_NOTE:
-
+                    deleteNote(intent);
                     break;
 
             }
 
+        }
+    }
+
+    private void deleteNote(Intent intent) {
+        String filename = intent.getStringExtra(FilesStorage.FILE_NAME);
+        long res = HelperDB.getInstance(this).deleteNote(filename);
+        if (res > 0) {
+            FilesStorage.deleteNote(filename);
+            EventBus.getDefault()
+                    .post(new Message(NotesFragment.REQUEST_CODE, Message.OK));
         }
     }
 
@@ -100,7 +110,7 @@ public class NotesIntentService extends IntentService {
             e.printStackTrace();
         }
         int last = text.indexOf("\n");
-        String first = text.substring(0, last >= 0 ? last : text.length() - 1);
+        String first = text.substring(0, last >= 0 ? last : text.length());
         if (!isUpdate)
             HelperDB.getInstance(this).insertNote(filename, first, category, color);
         else HelperDB.getInstance(this).updateNote(filename, first, category, color);
@@ -108,9 +118,9 @@ public class NotesIntentService extends IntentService {
     }
 
     private void deleteCategory(Intent intent) {
-        long id = intent.getLongExtra(HelperDB.ID, 0);
-        HelperDB.getInstance(this).deleteCategory(id);
-        if (id > 0)
+        String cat = intent.getStringExtra(HelperDB.NAME);
+        long res = HelperDB.getInstance(this).deleteCategory(cat);
+        if (res > 0)
             EventBus.getDefault()
                     .post(new Message(CategoriesFragment.REQUEST_CODE, Message.OK));
     }

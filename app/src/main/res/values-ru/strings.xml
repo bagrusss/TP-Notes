@@ -22,6 +22,8 @@
     <string name="context_menu">Меню</string>
     <string name="saved">Сохранено</string>
     <string name="error_save">Не могу сохранить файл</string>
+    <string name="delete_notes_message">Уделаление категории приведет к удаление всех заметок этой категории. Продолжить?</string>
+    <string name="delete_title">Удаление</string>
 
 
     <array name="themes_list">

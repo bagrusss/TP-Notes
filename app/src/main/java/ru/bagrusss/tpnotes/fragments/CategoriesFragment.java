@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +44,6 @@ public class CategoriesFragment extends BaseListFragment
         mCategoryAdapter = new CategoryAdapter(getActivity(), null, R.layout.item_category);
         mListView.setAdapter(mCategoryAdapter);
         mListView.setOnItemClickListener(this);
-        registerForContextMenu(mListView);
         loadCategories(this);
         EventBus.getDefault().register(this);
         return v;
@@ -111,7 +111,8 @@ public class CategoriesFragment extends BaseListFragment
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case 1:
-                ServiceHelper.deleteCategory(getActivity(), info.id);
+                CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) info.targetView.getTag();
+                showDeleteDialog(holder);
                 break;
             case 0:
                 editCategory(info.targetView, info.id);
@@ -120,6 +121,21 @@ public class CategoriesFragment extends BaseListFragment
                 return false;
         }
         return true;
+    }
+
+    private void showDeleteDialog(CategoryAdapter.ViewHolder holder) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.delete_notes_message)
+                .setTitle(R.string.delete_title)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    ServiceHelper.deleteCategory(getActivity(), holder.text.getText().toString());
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, which1) -> {
+                    dialog.dismiss();
+                })
+                .create()
+                .show();
     }
 
 }

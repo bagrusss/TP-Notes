@@ -133,8 +133,17 @@ public class HelperDB extends SQLiteOpenHelper {
         return res;
     }
 
-    public long deleteCategory(long id) {
-        return mDB.delete(TABLE_CATEGORIES, ID + "=?", new String[]{String.valueOf(id)});
+    public long deleteCategory(String cat) {
+        mDB.beginTransaction();
+        long res;
+        try {
+            res = mDB.delete(TABLE_CATEGORIES, NAME + "=?", new String[]{cat});
+            res += mDB.delete(TABLE_NOTES, CATEGORY + "=?", new String[]{cat});
+            mDB.setTransactionSuccessful();
+        } finally {
+            mDB.endTransaction();
+        }
+        return res;
     }
 
     public Cursor allNotes() {
@@ -166,5 +175,10 @@ public class HelperDB extends SQLiteOpenHelper {
         cv.put(CATEGORY, category);
         cv.put(COLOR, color);
         mDB.update(TABLE_NOTES, cv, NAME + "=?", new String[]{filename});
+    }
+
+    public long deleteNote(String file) {
+        return mDB.delete(TABLE_NOTES, NAME + "=?", new String[]{file});
+
     }
 }

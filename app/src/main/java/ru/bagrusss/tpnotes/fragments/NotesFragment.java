@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,6 +31,7 @@ import ru.bagrusss.tpnotes.adapters.NotesAdapter;
 import ru.bagrusss.tpnotes.data.HelperDB;
 import ru.bagrusss.tpnotes.eventbus.Message;
 import ru.bagrusss.tpnotes.services.NotesIntentService;
+import ru.bagrusss.tpnotes.services.ServiceHelper;
 
 /**
  * Created by bagrusss.
@@ -38,7 +40,6 @@ import ru.bagrusss.tpnotes.services.NotesIntentService;
 public class NotesFragment extends BaseListFragment
         implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
-    private Spinner mCategoriesSpinner;
     private View mSpinnerContainer;
     private NotesAdapter mNotesAdapter;
     private int loadersCount = 2;
@@ -59,9 +60,9 @@ public class NotesFragment extends BaseListFragment
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mCategoryAdapter = new CategoryAdapter(getActivity(), null, R.layout.item_spinner);
-        mCategoriesSpinner = (Spinner) mSpinnerContainer.findViewById(R.id.category_spinner);
-        mCategoriesSpinner.setAdapter(mCategoryAdapter);
-        mCategoriesSpinner.setOnItemSelectedListener(this);
+        Spinner categoriesSpinner = (Spinner) mSpinnerContainer.findViewById(R.id.category_spinner);
+        categoriesSpinner.setAdapter(mCategoryAdapter);
+        categoriesSpinner.setOnItemSelectedListener(this);
         toolbar.addView(mSpinnerContainer, lp);
         mNotesAdapter = new NotesAdapter(getActivity(), null);
         mListView.setAdapter(mNotesAdapter);
@@ -83,23 +84,47 @@ public class NotesFragment extends BaseListFragment
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Message msg) {
-        if (msg.reqCode == REQUEST_CODE && msg.status == NotesIntentService.STATUS_SCAN_OK) {
-            PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .edit().putBoolean(getString(R.string.key_sync), true).commit();
-            initLoaders();
+        if (msg.reqCode == REQUEST_CODE) {
+            if (msg.status == NotesIntentService.STATUS_SCAN_OK) {
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit().putBoolean(getString(R.string.key_sync), true).commit();
+                initLoaders();
+            } else getLoaderManager().getLoader(NotesLoader.ID).forceLoad();
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        editNote(view, position);
+    }
+
+    private void editNote(View view, long id) {
         NotesAdapter.ViewHolder holder = (NotesAdapter.ViewHolder) view.getTag();
         Intent intent = new Intent(getActivity(), EditNotesActivity.class);
         intent.setAction(EditNotesActivity.ACTION_EDIT);
         intent.putExtra(EditNotesActivity.KEY_LOCKED, false);
         intent.putExtra(EditNotesActivity.FILE_NAME, holder.name);
-        //позиция
         intent.putExtra(EditNotesActivity.KEY_CATEGORY, holder.category.getText().toString());
         startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case 1:
+                NotesAdapter.ViewHolder holder = (NotesAdapter.ViewHolder) info.targetView.getTag();
+                String filename = holder.name;
+                ServiceHelper.deleteNote(getActivity(), filename);
+                break;
+            case 0:
+                editNote(info.targetView, info.id);
+                break;
+            default:
+                return false;
+        }
+        return true;
     }
 
     @Override

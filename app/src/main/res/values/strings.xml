@@ -41,6 +41,8 @@
     <string name="context_menu">Menu</string>
     <string name="saved">Saved</string>
     <string name="error_save">Can\'t save file</string>
+    <string name="delete_notes_message">Do you want to delete this category?\\nThis action removes all notes of this category/</string>
+    <string name="delete_title">Delete</string>
 
     <array name="menu_list">
         <item>Edit</item>

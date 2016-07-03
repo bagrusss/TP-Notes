@@ -56,6 +56,7 @@ public abstract class BaseListFragment extends Fragment {
             });
         }
         mListView = (ListView) v.findViewById(R.id.list_view);
+        registerForContextMenu(mListView);
         return v;
     }
 

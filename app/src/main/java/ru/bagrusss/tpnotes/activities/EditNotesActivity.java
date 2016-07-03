@@ -31,8 +31,8 @@ import ru.bagrusss.tpnotes.utils.FilesStorage;
 public final class EditNotesActivity extends BaseActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private boolean mLockState = false;
-    private MenuItem mLockItem;
+    /*   private boolean mLockState = false;
+       private MenuItem mLockItem;*/
     private EditText mNoteText;
 
     private Spinner mCategorySpinner;
@@ -108,8 +108,8 @@ public final class EditNotesActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_note, menu);
-        mLockItem = menu.findItem(R.id.lock_action);
-        setLockIcon(mLockState);
+       /* mLockItem = menu.findItem(R.id.lock_action);
+        setLockIcon(mLockState);*/
         return true;
     }
 
@@ -117,10 +117,10 @@ public final class EditNotesActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean res = true;
         switch (item.getItemId()) {
-            case R.id.lock_action:
+/*            case R.id.lock_action:
                 mLockState = !mLockState;
                 setLockIcon(mLockState);
-                break;
+                break;*/
             case R.id.share_action:
                 save();
                 share();
@@ -135,7 +135,10 @@ public final class EditNotesActivity extends BaseActivity
     }
 
     private void share() {
-
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, mNoteText.getText().toString());
+        startActivity(Intent.createChooser(sharingIntent, getString(R.string.share)));
     }
 
     @Override
@@ -151,11 +154,11 @@ public final class EditNotesActivity extends BaseActivity
         back = true;
     }
 
-    private void setLockIcon(boolean lock) {
+/*    private void setLockIcon(boolean lock) {
         mLockItem.setIcon(lock ?
                 R.drawable.ic_locked_white :
                 R.drawable.ic_locked_no_white);
-    }
+    }*/
 
     @Override
     protected void save() {

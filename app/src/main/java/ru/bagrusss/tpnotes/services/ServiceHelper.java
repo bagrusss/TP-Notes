@@ -43,7 +43,10 @@ public class ServiceHelper {
     }
 
     public static void deleteNote(Context context, String filename) {
-
+        Intent intent = new Intent(context, NotesIntentService.class);
+        intent.setAction(NotesIntentService.ACTION_DELETE_NOTE);
+        intent.putExtra(FilesStorage.FILE_NAME, filename);
+        context.startService(intent);
     }
 
     public static void saveCategory(Context context, String name, String hexColor) {
@@ -54,10 +57,10 @@ public class ServiceHelper {
         context.startService(intent);
     }
 
-    public static void deleteCategory(Context context, long id) {
+    public static void deleteCategory(Context context, String category) {
         Intent intent = new Intent(context, NotesIntentService.class);
         intent.setAction(NotesIntentService.ACTION_DELETE_CATEGORY);
-        intent.putExtra(HelperDB.ID, id);
+        intent.putExtra(HelperDB.NAME, category);
         context.startService(intent);
     }
 

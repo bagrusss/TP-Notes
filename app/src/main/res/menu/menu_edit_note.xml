@@ -10,9 +10,9 @@
         android:icon="@drawable/ic_save_white"
         android:title="@string/save"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/lock_action"
-        android:icon="@drawable/ic_locked_white"
-        android:title="@string/encrypting"
-        app:showAsAction="always" />
+    <!--    <item
+            android:id="@+id/lock_action"
+            android:icon="@drawable/ic_locked_white"
+            android:title="@string/encrypting"
+            app:showAsAction="always" />-->
 </menu>
