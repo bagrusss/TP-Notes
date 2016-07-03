@@ -54,17 +54,20 @@ public abstract class BaseListFragment extends Fragment {
         return v;
     }
 
-    protected static class CategoriesLoader extends CursorLoader {
+    public static class CategoriesLoader extends CursorLoader {
 
         public static final int ID = 100;
+        private boolean all;
 
-        public CategoriesLoader(Context context) {
+        public CategoriesLoader(Context context, boolean showAll) {
             super(context);
+            all = showAll;
         }
 
         @Override
         public Cursor loadInBackground() {
-            return HelperDB.getInstance(getContext()).allCategories();
+            return all ? HelperDB.getInstance(getContext()).allCategories() :
+                    HelperDB.getInstance(getContext()).notAllCategories();
         }
     }
 

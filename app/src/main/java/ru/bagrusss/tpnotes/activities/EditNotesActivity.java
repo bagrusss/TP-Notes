@@ -1,19 +1,29 @@
 package ru.bagrusss.tpnotes.activities;
 
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import ru.bagrusss.tpnotes.R;
+import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
+import ru.bagrusss.tpnotes.fragments.BaseListFragment;
 
-public final class EditNotesActivity extends BaseActivity {
+public final class EditNotesActivity extends BaseActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private boolean mLockState = false;
     private MenuItem mLockItem;
     private EditText mNoteText;
+
+    private Spinner mCategory;
+    private CategoryAdapter mCategoryAdapter;
 
     public static final int CODE = 10;
 
@@ -27,6 +37,13 @@ public final class EditNotesActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent internalIntent = getIntent();
         mLockState = internalIntent.getBooleanExtra("lock", false);
+
+        mCategory = (Spinner) findViewById(R.id.spinner_category);
+        mCategoryAdapter = new CategoryAdapter(this, null, R.layout.item_category);
+        if (mCategory != null) {
+            mCategory.setAdapter(mCategoryAdapter);
+        }
+        getLoaderManager().initLoader(BaseListFragment.CategoriesLoader.ID, null, this);
     }
 
     @Override
@@ -73,4 +90,20 @@ public final class EditNotesActivity extends BaseActivity {
     protected void save() {
 
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new BaseListFragment.CategoriesLoader(this, false);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
+        mCategoryAdapter.swapCursor(c);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
 }

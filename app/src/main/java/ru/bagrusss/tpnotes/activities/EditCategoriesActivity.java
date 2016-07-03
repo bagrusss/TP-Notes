@@ -22,6 +22,7 @@ public final class EditCategoriesActivity extends BaseActivity {
     private CircleImageView mCategoryColor;
     private String mColor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +35,6 @@ public final class EditCategoriesActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
 
@@ -75,4 +75,6 @@ public final class EditCategoriesActivity extends BaseActivity {
         save();
         super.onBackPressed();
     }
+
+
 }

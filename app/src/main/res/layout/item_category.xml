@@ -6,7 +6,6 @@
     android:layout_marginLeft="@dimen/cardview_margin"
     android:layout_marginRight="@dimen/cardview_margin"
     android:layout_marginTop="@dimen/cardview_margin"
-    android:orientation="horizontal"
     app:cardCornerRadius="@dimen/cardview_default_radius">
 
     <LinearLayout

@@ -18,7 +18,7 @@ import ru.bagrusss.tpnotes.data.HelperDB;
  * Created by bagrusss.
  */
 public class NotesAdapter extends CursorAdapter {
-
+    
     public NotesAdapter(Context context, Cursor c) {
         super(context, c, 0);
     }

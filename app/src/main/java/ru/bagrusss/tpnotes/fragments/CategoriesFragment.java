@@ -37,7 +37,7 @@ public class CategoriesFragment extends BaseListFragment implements LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CategoriesLoader(getActivity());
+        return new CategoriesLoader(getActivity(), false);
     }
 
     @Override

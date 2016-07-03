@@ -79,7 +79,7 @@ public class NotesFragment extends BaseListFragment
         Loader<Cursor> loader;
         switch (id) {
             case CategoriesLoader.ID:
-                loader = new CategoriesLoader(getActivity());
+                loader = new CategoriesLoader(getActivity(), true);
                 break;
             case NotesLoader.ID:
                 String cat = args.getString(NotesLoader.SEARCH_CATEGORY);
@@ -112,7 +112,7 @@ public class NotesFragment extends BaseListFragment
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) view.getTag();
-        String category = holder.text.getText().toString();
+        String category = position == 0 ? "" : holder.text.getText().toString();
         Bundle args = new Bundle();
         args.putString(NotesLoader.SEARCH_CATEGORY, category);
         getLoaderManager().restartLoader(NotesLoader.ID, args, this);
@@ -142,7 +142,7 @@ public class NotesFragment extends BaseListFragment
         @Override
         public Cursor loadInBackground() {
             Cursor c;
-            if (mCategory.equals("<>"))
+            if ("".equals(mCategory))
                 c = HelperDB.getInstance(getContext()).allNotes();
             else c = HelperDB.getInstance(getContext()).notesWithCategory(mCategory);
             return c;

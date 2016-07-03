@@ -78,8 +78,8 @@ public class HelperDB extends SQLiteOpenHelper {
         db.execSQL(CREATE_NOTES);
         db.execSQL(CREATE_CATEGORIES);
         ContentValues cv = new ContentValues();
-        cv.put(NAME, "<>");
-        cv.put(COLOR, "#FFFF33");
+        cv.put(NAME, "");
+        cv.put(COLOR, "#00000000");
         db.insert(TABLE_CATEGORIES, null, cv);
     }
 
@@ -92,7 +92,7 @@ public class HelperDB extends SQLiteOpenHelper {
         File file = FilesStorage.getNotesDir();
         File files[] = file.listFiles();
         mDB.delete(TABLE_NOTES, null, null);
-        mDB.delete(TABLE_CATEGORIES, NAME + "!=?", new String[]{"<>"});
+        mDB.delete(TABLE_CATEGORIES, NAME + "!=?", new String[]{""});
         SQLiteStatement statementNote = mDB.compileStatement(INSERT_NOTE);
         SQLiteStatement statementCategory = mDB.compileStatement(INSERT_CATEGORY);
         for (File f : files) {
@@ -154,6 +154,10 @@ public class HelperDB extends SQLiteOpenHelper {
 
     public Cursor allCategories() {
         return mDB.query(TABLE_CATEGORIES, null, null, null, null, null, null);
+    }
+
+    public Cursor notAllCategories() {
+        return mDB.query(TABLE_CATEGORIES, null, ID + "!=1", null, null, null, null);
     }
 
     public Cursor notesWithCategory(String category) {
