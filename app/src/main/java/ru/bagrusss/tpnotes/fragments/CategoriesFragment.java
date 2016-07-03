@@ -111,8 +111,10 @@ public class CategoriesFragment extends BaseListFragment
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case 1:
-                CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) info.targetView.getTag();
-                showDeleteDialog(holder);
+                if (info.id > 2) {
+                    CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) info.targetView.getTag();
+                    showDeleteDialog(holder);
+                }
                 break;
             case 0:
                 editCategory(info.targetView, info.id);
