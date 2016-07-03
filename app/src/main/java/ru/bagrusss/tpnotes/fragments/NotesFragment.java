@@ -1,9 +1,11 @@
 package ru.bagrusss.tpnotes.fragments;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -23,10 +25,12 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import ru.bagrusss.tpnotes.R;
+import ru.bagrusss.tpnotes.activities.EditNotesActivity;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
 import ru.bagrusss.tpnotes.adapters.NotesAdapter;
 import ru.bagrusss.tpnotes.data.HelperDB;
 import ru.bagrusss.tpnotes.eventbus.Message;
+import ru.bagrusss.tpnotes.services.NotesIntentService;
 
 /**
  * Created by bagrusss.
@@ -40,13 +44,20 @@ public class NotesFragment extends BaseListFragment
     private NotesAdapter mNotesAdapter;
     private ProgressDialog mDialog;
     private int loadersCount = 2;
+    public static final int REQUEST_CODE = 30;
+
+    @Override
+    int getReqCode() {
+        return REQUEST_CODE;
+    }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = super.onCreateView(inflater, container, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, root, savedInstanceState);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        mDialog = ProgressDialog.show(getActivity(), "Loading", "Please wait...", true);
+        mDialog = ProgressDialog
+                .show(getActivity(), getString(R.string.loading), getString(R.string.wait), true);
         mSpinnerContainer = LayoutInflater.from(getActivity())
                 .inflate(R.layout.toolbar_spinner, toolbar, false);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
@@ -76,9 +87,34 @@ public class NotesFragment extends BaseListFragment
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Message msg) {
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .edit().putBoolean(getString(R.string.key_sync), true).commit();
-        initLoaders();
+        if (msg.reqCode == REQUEST_CODE && msg.status == NotesIntentService.STATUS_SCAN_OK) {
+            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .edit().putBoolean(getString(R.string.key_sync), true).commit();
+            initLoaders();
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        NotesAdapter.ViewHolder holder = (NotesAdapter.ViewHolder) view.getTag();
+        Intent intent = new Intent(getActivity(), EditNotesActivity.class);
+        intent.setAction(EditNotesActivity.ACTION_EDIT);
+        intent.putExtra(EditNotesActivity.KEY_LOCKED, false);
+        intent.putExtra(EditNotesActivity.FILE_NAME, holder.name);
+        intent.putExtra(EditNotesActivity.KEY_CATEGORY, holder.category.getText().toString());
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            reloadNotes();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void reloadNotes() {
+        getLoaderManager().getLoader(NotesLoader.ID).forceLoad();
     }
 
     public static NotesFragment newInstance(int activityCode) {
@@ -147,11 +183,6 @@ public class NotesFragment extends BaseListFragment
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
     }
 

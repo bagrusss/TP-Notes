@@ -18,7 +18,7 @@ import ru.bagrusss.tpnotes.data.HelperDB;
  * Created by bagrusss.
  */
 public class NotesAdapter extends CursorAdapter {
-    
+
     public NotesAdapter(Context context, Cursor c) {
         super(context, c, 0);
     }
@@ -40,13 +40,15 @@ public class NotesAdapter extends CursorAdapter {
         }
         holder.firstString.setText(c.getString(c.getColumnIndex(HelperDB.FIRST_STRING)));
         holder.category.setText(c.getString(c.getColumnIndex(HelperDB.CATEGORY)));
+        holder.name = c.getString(c.getColumnIndex(HelperDB.NAME));
         holder.color.setImageDrawable(new ColorDrawable(
                 Color.parseColor(c.getString(c.getColumnIndex(HelperDB.COLOR)))));
     }
 
     public static class ViewHolder {
         TextView firstString;
-        TextView category;
+        public TextView category;
         CircleImageView color;
+        public String name;
     }
 }

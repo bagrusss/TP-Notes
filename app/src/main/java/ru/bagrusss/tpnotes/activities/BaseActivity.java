@@ -15,11 +15,15 @@ import ru.bagrusss.tpnotes.R;
 
 abstract public class BaseActivity extends AppCompatActivity {
 
+    public static final String KEY_ID = "ID";
     protected Toolbar mToolbar;
     protected int mThemeId;
 
     public static final String ACTION_EDIT = "ACTION_EDIT";
     public static final String ACTION_NEW = "ACTION_NEW";
+
+    public static final String KEY_CATEGORY = "CATEGORY";
+    public static final String KEY_COLOR = "COLOR";
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

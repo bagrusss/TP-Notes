@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import ru.bagrusss.tpnotes.R;
+import ru.bagrusss.tpnotes.activities.BaseActivity;
 import ru.bagrusss.tpnotes.activities.EditCategoriesActivity;
 import ru.bagrusss.tpnotes.activities.EditNotesActivity;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
@@ -30,13 +31,11 @@ public abstract class BaseListFragment extends Fragment {
     public static final String ACTIVITY_CODE = "ACTIVITY_CODE";
     protected CategoryAdapter mCategoryAdapter;
 
-    public BaseListFragment() {
-
-    }
-
     protected void loadCategories(LoaderManager.LoaderCallbacks<?> callbacks) {
         getLoaderManager().initLoader(CategoriesLoader.ID, null, callbacks);
     }
+
+    abstract int getReqCode();
 
     @Nullable
     @Override
@@ -45,10 +44,14 @@ public abstract class BaseListFragment extends Fragment {
         mFab = (FloatingActionButton) v.findViewById(R.id.add_button);
         if (mFab != null) {
             Bundle args = getArguments();
-            mFab.setOnClickListener(view ->
-                    startActivity(new Intent(getActivity(),
-                            args.getInt(ACTIVITY_CODE, EditNotesActivity.CODE) == EditNotesActivity.CODE ?
-                                    EditNotesActivity.class : EditCategoriesActivity.class)));
+            mFab.setOnClickListener(view -> {
+                Intent intent = new Intent(getActivity(),
+                        args.getInt(ACTIVITY_CODE, EditNotesActivity.REQUEST_CODE) ==
+                                EditNotesActivity.REQUEST_CODE ?
+                                EditNotesActivity.class : EditCategoriesActivity.class);
+                intent.setAction(BaseActivity.ACTION_NEW);
+                startActivityForResult(intent, getReqCode());
+            });
         }
         mListView = (ListView) v.findViewById(R.id.list_view);
         return v;

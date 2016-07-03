@@ -92,7 +92,6 @@ public class HelperDB extends SQLiteOpenHelper {
         File file = FilesStorage.getNotesDir();
         File files[] = file.listFiles();
         mDB.delete(TABLE_NOTES, null, null);
-        mDB.delete(TABLE_CATEGORIES, NAME + "!=?", new String[]{""});
         SQLiteStatement statementNote = mDB.compileStatement(INSERT_NOTE);
         SQLiteStatement statementCategory = mDB.compileStatement(INSERT_CATEGORY);
         for (File f : files) {
@@ -146,6 +145,30 @@ public class HelperDB extends SQLiteOpenHelper {
         cv.put(FIRST_STRING, first);
         cv.put(CATEGORY, category);
         mDB.insert(TABLE_NOTES, null, cv);
+    }
+
+    public long insertCategory(String name, String color) {
+        ContentValues cv = new ContentValues();
+        cv.put(NAME, name);
+        cv.put(COLOR, color);
+        return mDB.insert(TABLE_CATEGORIES, null, cv);
+    }
+
+    public long updateCategory(long id, String name, String color) {
+        ContentValues cv = new ContentValues();
+        cv.put(NAME, name);
+        cv.put(COLOR, color);
+        String oldName;
+        Cursor c = mDB.query(TABLE_CATEGORIES, new String[]{NAME}, ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null);
+        c.moveToFirst();
+        oldName = c.getString(c.getColumnIndex(NAME));
+        c.close();
+        long res = mDB.update(TABLE_CATEGORIES, cv, ID + "=?", new String[]{String.valueOf(id)});
+        cv.clear();
+        cv.put(CATEGORY, name);
+        res += mDB.update(TABLE_NOTES, cv, CATEGORY + "=?", new String[]{oldName});
+        return res;
     }
 
     public Cursor allNotes() {

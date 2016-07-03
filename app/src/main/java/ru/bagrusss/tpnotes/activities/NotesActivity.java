@@ -87,7 +87,7 @@ public class NotesActivity extends BaseActivity {
         switch (pos) {
             case NOTES_POSITION:
                 resTitle = R.string.notes;
-                lastFragment = NotesFragment.newInstance(EditNotesActivity.CODE);
+                lastFragment = NotesFragment.newInstance(EditNotesActivity.REQUEST_CODE);
                 break;
             case SETTINGS_POSITION:
                 resTitle = R.string.settings;

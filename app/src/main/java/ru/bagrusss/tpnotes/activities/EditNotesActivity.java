@@ -25,7 +25,9 @@ public final class EditNotesActivity extends BaseActivity
     private Spinner mCategory;
     private CategoryAdapter mCategoryAdapter;
 
-    public static final int CODE = 10;
+    public static final int REQUEST_CODE = 10;
+    public static final String KEY_LOCKED = "LOCKED";
+    public static final String FILE_NAME = "FILE_NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public final class EditNotesActivity extends BaseActivity
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent internalIntent = getIntent();
-        mLockState = internalIntent.getBooleanExtra("lock", false);
+        mLockState = internalIntent.getBooleanExtra(KEY_LOCKED, false);
 
         mCategory = (Spinner) findViewById(R.id.spinner_category);
         mCategoryAdapter = new CategoryAdapter(this, null, R.layout.item_category);
@@ -63,7 +65,8 @@ public final class EditNotesActivity extends BaseActivity
                 setLockIcon(mLockState);
                 break;
             case R.id.share_action:
-
+                save();
+                share();
                 break;
             case R.id.save_action:
                 save();
@@ -72,6 +75,10 @@ public final class EditNotesActivity extends BaseActivity
                 res = false;
         }
         return res || super.onOptionsItemSelected(item);
+    }
+
+    private void share() {
+
     }
 
     @Override

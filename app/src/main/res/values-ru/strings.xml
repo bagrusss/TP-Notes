@@ -16,6 +16,10 @@
     <string name="settings">Настройки</string>
     <string name="save">Сохранить</string>
     <string name="all">Все заметки</string>
+    <string name="loading">Загрузка</string>
+    <string name="wait">Пожалуйста, подождите…</string>
+    <string name="edit">Редактирование</string>
+    <string name="error_name">Такая категория уже существует</string>
 
     <array name="themes_list">
         <item>Светлая</item>

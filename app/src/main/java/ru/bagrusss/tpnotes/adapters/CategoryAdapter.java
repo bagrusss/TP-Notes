@@ -48,12 +48,13 @@ public class CategoryAdapter extends CursorAdapter {
         String text = c.getString(c.getColumnIndex(HelperDB.NAME));
         holder.text.setText("".equals(text) ? mAllNotesText : text);
         holder.color.setImageDrawable(new ColorDrawable(
-                Color.parseColor(c.getString(c.getColumnIndex(HelperDB.COLOR)))));
+                Color.parseColor(holder.colorVal = c.getString(c.getColumnIndex(HelperDB.COLOR)))));
     }
 
     public static class ViewHolder {
         public TextView text;
         public CircleImageView color;
+        public String colorVal;
     }
 
 }

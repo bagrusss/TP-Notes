@@ -24,14 +24,16 @@
         </activity>
         <activity
             android:name=".activities.EditNotesActivity"
+            android:label="@string/edit"
             android:theme="@style/Theme.Light.NoActionBar" />
         <activity
             android:name=".activities.EditCategoriesActivity"
+            android:label="@string/edit"
             android:theme="@style/Theme.Light.NoActionBar" />
 
         <service
-            android:name=".services.FileIntentService"
-            android:exported="false"></service>
+            android:name=".services.NotesIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>
