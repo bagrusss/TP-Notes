@@ -97,6 +97,7 @@ public class NotesFragment extends BaseListFragment
         intent.setAction(EditNotesActivity.ACTION_EDIT);
         intent.putExtra(EditNotesActivity.KEY_LOCKED, false);
         intent.putExtra(EditNotesActivity.FILE_NAME, holder.name);
+        //позиция
         intent.putExtra(EditNotesActivity.KEY_CATEGORY, holder.category.getText().toString());
         startActivityForResult(intent, REQUEST_CODE);
     }

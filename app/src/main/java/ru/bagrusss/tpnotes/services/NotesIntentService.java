@@ -14,6 +14,7 @@ import ru.bagrusss.tpnotes.activities.EditCategoriesActivity;
 import ru.bagrusss.tpnotes.activities.EditNotesActivity;
 import ru.bagrusss.tpnotes.data.HelperDB;
 import ru.bagrusss.tpnotes.eventbus.Message;
+import ru.bagrusss.tpnotes.eventbus.TextMessage;
 import ru.bagrusss.tpnotes.fragments.CategoriesFragment;
 import ru.bagrusss.tpnotes.fragments.NotesFragment;
 import ru.bagrusss.tpnotes.utils.FilesStorage;
@@ -24,6 +25,7 @@ public class NotesIntentService extends IntentService {
     public static final String ACTION_UPDATE_NOTE = "ru.bagrusss.tpnotes.services.action.ACTION_UPDATE_NOTE";
     public static final String ACTION_DELETE_NOTE = "ru.bagrusss.tpnotes.services.action.ACTION_DELETE_NOTE";
     public static final String ACTION_SCAN_NOTES = "ru.bagrusss.tpnotes.services.action.ACTION_SCAN_NOTES";
+    public static final String ACTION_READ_NOTE = "ru.bagrusss.tpnotes.services.action.ACTION_READ_NOTE";
 
     public static final String ACTION_SAVE_CATEGORY = "ru.bagrusss.tpnotes.services.action.ACTION_SAVE_CATEGORY";
     public static final String ACTION_UPDATE_CATEGORY = "ru.bagrusss.tpnotes.services.action.ACTION_UPDATE_CATEGORY";
@@ -56,12 +58,14 @@ public class NotesIntentService extends IntentService {
                 case ACTION_DELETE_CATEGORY:
                     deleteCategory(intent);
                     break;
-
+                case ACTION_READ_NOTE:
+                    readNote(intent);
+                    break;
                 case ACTION_SAVE_NOTE:
-                    saveNote(intent);
+                    saveNote(intent, false);
                     break;
                 case ACTION_UPDATE_NOTE:
-
+                    saveNote(intent, true);
                     break;
                 case ACTION_DELETE_NOTE:
 
@@ -72,7 +76,20 @@ public class NotesIntentService extends IntentService {
         }
     }
 
-    private void saveNote(Intent intent) {
+    private void readNote(Intent intent) {
+        String filename = intent.getStringExtra(EditNotesActivity.FILE_NAME);
+        String text = null;
+        try {
+            text = FilesStorage.readFile(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault()
+                .post(new TextMessage(EditNotesActivity.REQUEST_CODE, text));
+
+    }
+
+    private void saveNote(Intent intent, boolean isUpdate) {
         String category = intent.getStringExtra(HelperDB.CATEGORY);
         String color = intent.getStringExtra(HelperDB.COLOR);
         String text = intent.getStringExtra(HelperDB.FIRST_STRING);
@@ -84,7 +101,9 @@ public class NotesIntentService extends IntentService {
         }
         int last = text.indexOf("\n");
         String first = text.substring(0, last >= 0 ? last : text.length() - 1);
-        HelperDB.getInstance(this).insertNote(filename, first, category, color);
+        if (!isUpdate)
+            HelperDB.getInstance(this).insertNote(filename, first, category, color);
+        else HelperDB.getInstance(this).updateNote(filename, first, category, color);
         EventBus.getDefault().post(new Message(EditNotesActivity.REQUEST_CODE, Message.OK));
     }
 

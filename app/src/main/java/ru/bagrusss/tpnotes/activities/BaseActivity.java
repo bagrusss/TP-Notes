@@ -19,6 +19,7 @@ abstract public class BaseActivity extends AppCompatActivity {
     protected Toolbar mToolbar;
     protected int mThemeId;
     protected String mAction;
+    protected String mColor;
 
     public static final String ACTION_EDIT = "ACTION_EDIT";
     public static final String ACTION_NEW = "ACTION_NEW";

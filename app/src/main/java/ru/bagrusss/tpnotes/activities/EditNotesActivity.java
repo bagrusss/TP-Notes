@@ -20,7 +20,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
+import ru.bagrusss.tpnotes.data.HelperDB;
 import ru.bagrusss.tpnotes.eventbus.Message;
+import ru.bagrusss.tpnotes.eventbus.TextMessage;
 import ru.bagrusss.tpnotes.fragments.BaseListFragment;
 import ru.bagrusss.tpnotes.services.ServiceHelper;
 import ru.bagrusss.tpnotes.utils.DateTime;
@@ -76,13 +78,31 @@ public final class EditNotesActivity extends BaseActivity
             });
         }
         getLoaderManager().initLoader(BaseListFragment.CategoriesLoader.ID, null, this);
-        EventBus.getDefault().register(this);
         mAction = intent.getAction();
         if (mAction.equals(ACTION_NEW)) {
             mFileName = FilesStorage.PREFIX + DateTime.get() + FilesStorage.EXT;
         } else {
-
+            mCategory = intent.getStringExtra(KEY_CATEGORY);
+            mFileName = intent.getStringExtra(FILE_NAME);
+            loadNote(mFileName);
         }
+        EventBus.getDefault().register(this);
+
+    }
+
+    private void setSpinner() {
+        for (int i = 0; i < mCategorySpinner.getCount(); i++) {
+            Cursor c = (Cursor) mCategorySpinner.getItemAtPosition(i);
+            String cat = c.getString(c.getColumnIndex(HelperDB.NAME));
+            if (cat.equals(mCategory)) {
+                mCategorySpinner.setSelection(i);
+                break;
+            }
+        }
+    }
+
+    private void loadNote(String mFileName) {
+        ServiceHelper.readNote(this, mFileName);
     }
 
     @Override
@@ -140,7 +160,9 @@ public final class EditNotesActivity extends BaseActivity
     @Override
     protected void save() {
         String text = mNoteText.getText().toString();
-        ServiceHelper.saveNote(this, mFileName, text, mCategory, mColor);
+        if (mAction.equals(ACTION_NEW))
+            ServiceHelper.saveNote(this, mFileName, text, mCategory, mColor);
+        else ServiceHelper.updateNote(this, mFileName, text, mCategory, mColor);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -158,6 +180,13 @@ public final class EditNotesActivity extends BaseActivity
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(TextMessage msg) {
+        if (msg.reqCode == REQUEST_CODE) {
+            mNoteText.append(msg.line);
+        }
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new BaseListFragment.CategoriesLoader(this, false);
@@ -166,6 +195,7 @@ public final class EditNotesActivity extends BaseActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         mCategoryAdapter.swapCursor(c);
+        setSpinner();
     }
 
     @Override

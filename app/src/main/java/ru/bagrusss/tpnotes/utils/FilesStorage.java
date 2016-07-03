@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.google.common.io.Closer;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -36,7 +38,9 @@ public class FilesStorage {
 
     public static File createNote(String fileName) throws IOException {
         File file = new File(getNotesDir(), fileName);
-        return !file.exists() && file.createNewFile() ? file : null;
+        if (!file.exists())
+            file.createNewFile();
+        return file;
     }
 
     public static void writeNote(String filename, String text) throws IOException {
@@ -77,5 +81,10 @@ public class FilesStorage {
         }
         Log.i(FilesStorage.class.getCanonicalName(), "Cant write to storage");
         return false;
+    }
+
+    public static String readFile(String filename) throws IOException {
+        File file = FilesStorage.getNote(filename);
+        return FileUtils.readFileToString(file, "utf-8");
     }
 }

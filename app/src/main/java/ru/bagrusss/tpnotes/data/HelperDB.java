@@ -43,13 +43,6 @@ public class HelperDB extends SQLiteOpenHelper {
             NAME + " TEXT UNIQUE, " +
             COLOR + " TEXT);"; //hex val
 
-    private static final String INSERT_CATEGORY = "INSERT OR IGNORE INTO " + TABLE_CATEGORIES +
-            " (" + NAME + ',' + COLOR + ')' + " VALUES(?,?);";
-
-    private static final String INSERT_NOTE = "INSERT OR IGNORE INTO " + TABLE_NOTES +
-            " ( " + NAME + ',' + FIRST_STRING + ',' + CATEGORY + ',' + COLOR + ')'
-            + " VALUES(?,?,?,?);";
-
     private static final String DELETE_NOTE = "DELETE FROM " + TABLE_NOTES +
             " WHERE " + NAME + "=?;";
 
@@ -164,5 +157,14 @@ public class HelperDB extends SQLiteOpenHelper {
         if (mDB != null && mDB.isOpen())
             mDB.close();
         mInstance = null;
+    }
+
+    public void updateNote(String filename, String first, String category, String color) {
+        ContentValues cv = new ContentValues();
+        cv.put(NAME, filename);
+        cv.put(FIRST_STRING, first);
+        cv.put(CATEGORY, category);
+        cv.put(COLOR, color);
+        mDB.update(TABLE_NOTES, cv, NAME + "=?", new String[]{filename});
     }
 }
