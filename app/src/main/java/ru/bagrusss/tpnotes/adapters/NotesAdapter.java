@@ -17,20 +17,15 @@ import ru.bagrusss.tpnotes.data.HelperDB;
 /**
  * Created by bagrusss.
  */
-public class CategoryAdapter extends CursorAdapter {
+public class NotesAdapter extends CursorAdapter {
 
-    private LayoutInflater mInflater;
-    private int mLayout;
-
-    public CategoryAdapter(Context context, Cursor c, int layout) {
-        super(context, c, false);
-        mInflater = LayoutInflater.from(context);
-        mLayout = layout;
+    public NotesAdapter(Context context, Cursor c) {
+        super(context, c, 0);
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return mInflater.inflate(mLayout, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.item_note, parent, false);
     }
 
     @Override
@@ -38,27 +33,20 @@ public class CategoryAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) v.getTag();
         if (holder == null) {
             holder = new ViewHolder();
-            holder.text = (TextView) v.findViewById(R.id.text_category);
+            holder.firstString = (TextView) v.findViewById(R.id.note_first_text);
+            holder.category = (TextView) v.findViewById(R.id.category_text);
             holder.color = (CircleImageView) v.findViewById(R.id.color_category);
             v.setTag(holder);
         }
-        holder.text.setText(c.getString(c.getColumnIndex(HelperDB.NAME)));
+        holder.firstString.setText(c.getString(c.getColumnIndex(HelperDB.FIRST_STRING)));
+        holder.category.setText(c.getString(c.getColumnIndex(HelperDB.CATEGORY)));
         holder.color.setImageDrawable(new ColorDrawable(
                 Color.parseColor(c.getString(c.getColumnIndex(HelperDB.COLOR)))));
     }
 
     public static class ViewHolder {
-        public TextView text;
-        public CircleImageView color;
-    }
-
-    @Override
-    public View newDropDownView(Context context, Cursor cursor, ViewGroup parent) {
-        return super.newDropDownView(context, cursor, parent);
-    }
-
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return super.getDropDownView(position, convertView, parent);
+        TextView firstString;
+        TextView category;
+        CircleImageView color;
     }
 }

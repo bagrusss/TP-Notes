@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.Color;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,6 +37,7 @@ public class HelperDB extends SQLiteOpenHelper {
             ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             NAME + " TEXT UNIQUE, " +
             FIRST_STRING + " TEXT, " +
+            COLOR + " TEXT, " +
             CATEGORY + " TEXT);";
 
     private static final String CREATE_CATEGORIES = "CREATE TABLE " + TABLE_CATEGORIES + " (" +
@@ -47,7 +49,8 @@ public class HelperDB extends SQLiteOpenHelper {
             " (" + NAME + ',' + COLOR + ')' + " VALUES(?,?);";
 
     private static final String INSERT_NOTE = "INSERT OR IGNORE INTO " + TABLE_NOTES +
-            " ( " + NAME + ',' + FIRST_STRING + ',' + CATEGORY + ')' + " VALUES(?,?,?);";
+            " ( " + NAME + ',' + FIRST_STRING + ',' + CATEGORY + ',' + COLOR + ')'
+            + " VALUES(?,?,?,?);";
 
     private static HelperDB mInstance;
     private static SQLiteDatabase mDB;
@@ -75,7 +78,7 @@ public class HelperDB extends SQLiteOpenHelper {
         db.execSQL(CREATE_NOTES);
         db.execSQL(CREATE_CATEGORIES);
         ContentValues cv = new ContentValues();
-        cv.put(NAME, "default");
+        cv.put(NAME, "<>");
         cv.put(COLOR, "#FFFF33");
         db.insert(TABLE_CATEGORIES, null, cv);
     }
@@ -89,13 +92,25 @@ public class HelperDB extends SQLiteOpenHelper {
         File file = FilesStorage.getNotesDir();
         File files[] = file.listFiles();
         mDB.delete(TABLE_NOTES, null, null);
-        mDB.delete(TABLE_CATEGORIES, null, null);
+        mDB.delete(TABLE_CATEGORIES, NAME + "!=?", new String[]{"<>"});
         SQLiteStatement statementNote = mDB.compileStatement(INSERT_NOTE);
         SQLiteStatement statementCategory = mDB.compileStatement(INSERT_CATEGORY);
         for (File f : files) {
             String fName = f.getName();
-            String category = fName.substring(fName.indexOf("__") + 2, fName.indexOf("."));
-            String name = fName.substring(0, fName.indexOf("__"));
+            int categorySeparator = fName.indexOf("__");
+            int colorSeparator = fName.indexOf("-");
+            int fileExtSeparator = fName.indexOf(".");
+            int res = categorySeparator | colorSeparator | fileExtSeparator;
+            if (res < 0)
+                return;
+            String color = fName.substring(colorSeparator + 1, fileExtSeparator);
+            try {
+                Color.parseColor(color);
+            } catch (IllegalArgumentException e) {
+                return;
+            }
+            String category = fName.substring(categorySeparator + 2, colorSeparator);
+            String name = fName.substring(0, categorySeparator);
             BufferedReader reader = null;
             String first = null;
             try {
@@ -115,9 +130,10 @@ public class HelperDB extends SQLiteOpenHelper {
             statementNote.bindString(1, name);
             statementNote.bindString(2, first == null ? "" : first);
             statementNote.bindString(3, category);
+            statementNote.bindString(4, color);
             statementNote.executeInsert();
             statementCategory.bindString(1, category);
-            statementCategory.bindString(2, "#000000");
+            statementCategory.bindString(2, color);
             statementCategory.executeInsert();
         }
         statementNote.close();

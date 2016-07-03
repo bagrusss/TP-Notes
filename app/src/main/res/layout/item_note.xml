@@ -10,11 +10,12 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/note_img"
+            android:id="@+id/color_category"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:src="@android:color/holo_blue_light" />
 
@@ -22,15 +23,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/note_img"
+            android:layout_toRightOf="@id/color_category"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/note_name"
+                android:id="@+id/note_first_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:textSize="@dimen/item_title_text_size" />
+                android:textSize="@dimen/item_text_size" />
 
             <TextView
                 android:id="@+id/category_text"

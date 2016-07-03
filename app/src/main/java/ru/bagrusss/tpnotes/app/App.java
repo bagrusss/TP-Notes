@@ -18,13 +18,13 @@ public class App extends Application {
         super.onCreate();
         FilesStorage.createRootDir();
         try {
-            FilesStorage.createNote("1__10.txt");
-            FilesStorage.createNote("2__10.txt");
-            FilesStorage.createNote("3__11.txt");
-            FilesStorage.createNote("4__11.txt");
-            FilesStorage.createNote("5__12.txt");
-            FilesStorage.createNote("6__12.txt");
-            FilesStorage.createNote("7__12.txt");
+            FilesStorage.createNote("1__10-red.txt");
+            FilesStorage.createNote("2__10-red.txt");
+            FilesStorage.createNote("3__11-green.txt");
+            FilesStorage.createNote("4__11-green.txt");
+            FilesStorage.createNote("5__12-yellow.txt");
+            FilesStorage.createNote("6__12-yellow.txt");
+            FilesStorage.createNote("7__12-yellow.txt");
             HelperDB.getInstance(this).scanNotes();
             HelperDB.closeDB();
         } catch (IOException e) {

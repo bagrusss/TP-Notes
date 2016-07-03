@@ -13,37 +13,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
+import ru.bagrusss.tpnotes.adapters.NotesAdapter;
+import ru.bagrusss.tpnotes.data.HelperDB;
 
 /**
  * Created by bagrusss.
  */
 
 public class NotesFragment extends BaseListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
     private Spinner mCategoriesSpinner;
-    private View spinnerContainer;
+    private View mSpinnerContainer;
+    private NotesAdapter mNotesAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        RelativeLayout layout = (RelativeLayout) v;
-        spinnerContainer = LayoutInflater.from(getActivity())
+        mSpinnerContainer = LayoutInflater.from(getActivity())
                 .inflate(R.layout.toolbar_spinner, toolbar, false);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mCategoryAdapter = new CategoryAdapter(getActivity(), null, R.layout.item_spinner);
-        mCategoriesSpinner = (Spinner) spinnerContainer.findViewById(R.id.category_spinner);
+        mCategoriesSpinner = (Spinner) mSpinnerContainer.findViewById(R.id.category_spinner);
         mCategoriesSpinner.setAdapter(mCategoryAdapter);
         mCategoriesSpinner.setOnItemSelectedListener(this);
-        toolbar.addView(spinnerContainer, lp);
+        toolbar.addView(mSpinnerContainer, lp);
+        mNotesAdapter = new NotesAdapter(getActivity(), null);
+        mListView.setAdapter(mNotesAdapter);
+        mListView.setOnItemClickListener(this);
         initLoaders();
         return v;
     }
@@ -51,7 +55,7 @@ public class NotesFragment extends BaseListFragment
     @Override
     public void onDestroy() {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolbar.removeView(spinnerContainer);
+        toolbar.removeView(mSpinnerContainer);
         super.onDestroy();
     }
 
@@ -65,6 +69,9 @@ public class NotesFragment extends BaseListFragment
 
     private void initLoaders() {
         loadCategories(this);
+        Bundle args = new Bundle();
+        args.putString(NotesLoader.SEARCH_CATEGORY, "<>");
+        getLoaderManager().initLoader(NotesLoader.ID, args, this);
     }
 
     @Override
@@ -73,6 +80,10 @@ public class NotesFragment extends BaseListFragment
         switch (id) {
             case CategoriesLoader.ID:
                 loader = new CategoriesLoader(getActivity());
+                break;
+            case NotesLoader.ID:
+                String cat = args.getString(NotesLoader.SEARCH_CATEGORY);
+                loader = new NotesLoader(getActivity(), cat);
                 break;
             default:
                 return null;
@@ -87,6 +98,9 @@ public class NotesFragment extends BaseListFragment
             case CategoriesLoader.ID:
                 mCategoryAdapter.swapCursor(c);
                 break;
+            case NotesLoader.ID:
+                mNotesAdapter.swapCursor(c);
+                break;
         }
     }
 
@@ -97,7 +111,11 @@ public class NotesFragment extends BaseListFragment
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        CategoryAdapter.ViewHolder holder = (CategoryAdapter.ViewHolder) view.getTag();
+        String category = holder.text.getText().toString();
+        Bundle args = new Bundle();
+        args.putString(NotesLoader.SEARCH_CATEGORY, category);
+        getLoaderManager().restartLoader(NotesLoader.ID, args, this);
     }
 
     @Override
@@ -105,15 +123,29 @@ public class NotesFragment extends BaseListFragment
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
     private static class NotesLoader extends CursorLoader {
 
-        public NotesLoader(Context context) {
+        public static final int ID = 200;
+        public static final String SEARCH_CATEGORY = "search";
+        private String mCategory;
+
+        public NotesLoader(Context context, String category) {
             super(context);
+            mCategory = category;
         }
 
         @Override
         public Cursor loadInBackground() {
-            return super.loadInBackground();
+            Cursor c;
+            if (mCategory.equals("<>"))
+                c = HelperDB.getInstance(getContext()).allNotes();
+            else c = HelperDB.getInstance(getContext()).notesWithCategory(mCategory);
+            return c;
         }
     }
 }
