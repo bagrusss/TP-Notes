@@ -4,7 +4,7 @@ import android.app.Application;
 
 import java.io.IOException;
 
-import ru.bagrusss.tpnotes.data.HelperDB;
+import ru.bagrusss.tpnotes.services.ServiceHelper;
 import ru.bagrusss.tpnotes.utils.FilesStorage;
 
 /**
@@ -25,8 +25,7 @@ public class App extends Application {
             FilesStorage.createNote("5__12-yellow.txt");
             FilesStorage.createNote("6__12-yellow.txt");
             FilesStorage.createNote("7__12-yellow.txt");
-            HelperDB.getInstance(this).scanNotes();
-            HelperDB.closeDB();
+            ServiceHelper.scanNotes(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

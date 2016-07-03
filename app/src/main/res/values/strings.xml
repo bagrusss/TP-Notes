@@ -33,5 +33,6 @@
     <string name="tp_link">park.mail.ru/profile/v.kozhushko/</string>
     <string name="save">Save</string>
     <string name="all">All notes</string>
+    <string name="key_sync">sync</string>
 
 </resources>

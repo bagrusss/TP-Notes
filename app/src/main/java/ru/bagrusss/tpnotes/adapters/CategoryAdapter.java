@@ -56,13 +56,4 @@ public class CategoryAdapter extends CursorAdapter {
         public CircleImageView color;
     }
 
-    @Override
-    public View newDropDownView(Context context, Cursor cursor, ViewGroup parent) {
-        return super.newDropDownView(context, cursor, parent);
-    }
-
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return super.getDropDownView(position, convertView, parent);
-    }
 }

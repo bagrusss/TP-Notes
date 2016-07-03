@@ -1,11 +1,14 @@
 package ru.bagrusss.tpnotes.fragments;
 
 import android.app.LoaderManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -15,10 +18,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import ru.bagrusss.tpnotes.R;
 import ru.bagrusss.tpnotes.adapters.CategoryAdapter;
 import ru.bagrusss.tpnotes.adapters.NotesAdapter;
 import ru.bagrusss.tpnotes.data.HelperDB;
+import ru.bagrusss.tpnotes.eventbus.Message;
 
 /**
  * Created by bagrusss.
@@ -30,12 +38,15 @@ public class NotesFragment extends BaseListFragment
     private Spinner mCategoriesSpinner;
     private View mSpinnerContainer;
     private NotesAdapter mNotesAdapter;
+    private ProgressDialog mDialog;
+    private int loadersCount = 2;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        mDialog = ProgressDialog.show(getActivity(), "Loading", "Please wait...", true);
         mSpinnerContainer = LayoutInflater.from(getActivity())
                 .inflate(R.layout.toolbar_spinner, toolbar, false);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
@@ -48,15 +59,26 @@ public class NotesFragment extends BaseListFragment
         mNotesAdapter = new NotesAdapter(getActivity(), null);
         mListView.setAdapter(mNotesAdapter);
         mListView.setOnItemClickListener(this);
-        initLoaders();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (preferences.getBoolean(getString(R.string.key_sync), false))
+            initLoaders();
+        EventBus.getDefault().register(this);
         return v;
     }
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.removeView(mSpinnerContainer);
         super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(Message msg) {
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .edit().putBoolean(getString(R.string.key_sync), true).commit();
+        initLoaders();
     }
 
     public static NotesFragment newInstance(int activityCode) {
@@ -70,7 +92,7 @@ public class NotesFragment extends BaseListFragment
     private void initLoaders() {
         loadCategories(this);
         Bundle args = new Bundle();
-        args.putString(NotesLoader.SEARCH_CATEGORY, "<>");
+        args.putString(NotesLoader.SEARCH_CATEGORY, "");
         getLoaderManager().initLoader(NotesLoader.ID, args, this);
     }
 
@@ -97,11 +119,15 @@ public class NotesFragment extends BaseListFragment
         switch (loader.getId()) {
             case CategoriesLoader.ID:
                 mCategoryAdapter.swapCursor(c);
+                --loadersCount;
                 break;
             case NotesLoader.ID:
                 mNotesAdapter.swapCursor(c);
+                --loadersCount;
                 break;
         }
+        if (loadersCount == 0)
+            mDialog.dismiss();
     }
 
     @Override
@@ -116,6 +142,7 @@ public class NotesFragment extends BaseListFragment
         Bundle args = new Bundle();
         args.putString(NotesLoader.SEARCH_CATEGORY, category);
         getLoaderManager().restartLoader(NotesLoader.ID, args, this);
+        ++loadersCount;
     }
 
     @Override
