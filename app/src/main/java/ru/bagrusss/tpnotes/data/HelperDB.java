@@ -73,7 +73,9 @@ public class HelperDB extends SQLiteOpenHelper {
         db.execSQL(CREATE_CATEGORIES);
         ContentValues cv = new ContentValues();
         cv.put(NAME, "");
-        cv.put(COLOR, "#00000000");
+        db.insert(TABLE_CATEGORIES, null, cv);
+        cv.put(NAME, "temp");
+        cv.put(COLOR, "#00FFFF");
         db.insert(TABLE_CATEGORIES, null, cv);
     }
 
